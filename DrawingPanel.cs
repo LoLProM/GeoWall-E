@@ -1,4 +1,5 @@
 using Godot;
+using GSharpProject;
 using System;
 
 public partial class DrawingPanel : Panel
@@ -13,26 +14,27 @@ public partial class DrawingPanel : Panel
 	{
 	}
 
-	public override void _Draw() {
+	public override void _Draw()
+	{
 		// DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
 		// DrawRect(new Rect2(0.5f, 0.5f, 100f, 100f), Colors.Green);
 
 		// DrawLine(new Vector2(100f, 100f), new Vector2(200, 200f), Colors.Black, 100);
-		
+
 		// Font defaultFont = ThemeDB.FallbackFont;
 		// int defaultFontSize = ThemeDB.FallbackFontSize;
 		// DrawString(defaultFont, new Vector2(200, 200), "Hello world", 0, -1, 100, Colors.Black);
-	
-		var points = new Vector2 [] { new Vector2(100, 100) };
-		var uvs = new Vector2 [] { new Vector2(100, 100) };
-		var colors = new Color [] { Colors.Black };
+
+		var points = new Vector2[] { new Vector2(100, 100) };
+		var uvs = new Vector2[] { new Vector2(100, 100) };
+		var colors = new Color[] { Colors.Black };
 		// DrawPrimitive(points, colors, uvs);
-		
+
 		DrawCircle(new Vector2(100, 100), 5, Colors.Black);
-		
+
 		// DrawLine(new Vector2(100, 100), new Vector2(101, 101), Colors.Black, 10);
 	}
-	
+
 	/// <summary>
 	/// Runs whenever the RunButton is pressed.
 	/// </summary>
@@ -41,10 +43,14 @@ public partial class DrawingPanel : Panel
 		// Get the code edit node and access the code text.
 		var codeEdit = GetNode<TextEdit>("../CodeEdit");
 		var code = codeEdit.Text;
-		
-		codeEdit.Text = "jajaj";
-		
-		
+
+		var tree = ASTree.Parse(code);
+
+		var evaluator = new GSharpEvaluator(tree.Root);
+		var result = evaluator.Evaluate();
+
+		GD.Print(result);
+
 	}
 }
 
