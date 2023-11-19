@@ -6,7 +6,6 @@ namespace GSharpProject;
 
 class Parser
 {
-	private int position;
 	private List<Token> tokens;
 	public Parser(string text)
 	{
