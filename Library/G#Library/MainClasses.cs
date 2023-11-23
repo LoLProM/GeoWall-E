@@ -23,6 +23,11 @@ class Point : GSharpExpression
 
 class Line
 {
+    public Line()
+    {
+        StartPoint = new Point("a");
+        EndPoint = new Point(200,200,"b");
+    }
     public Line(Point startPoint, Point endPoint)
     {
         StartPoint = startPoint;

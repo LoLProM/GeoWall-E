@@ -44,4 +44,8 @@ public enum TokenType
     ParenthesizedExpression,
     IfElseExpression,
     Point,
+    Line,
+    Circle,
+    Ray,
+    Segment,
 }

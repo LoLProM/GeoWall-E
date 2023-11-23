@@ -46,12 +46,10 @@ public class GSharpEvaluator
         }
         throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
     }
-
     private object EvaluateFunctionReference(FunctionReference functionReference, Scope scope)
     {
         return functionReference.Eval(scope);
     }
-
     private object EvaluateFunctionCallExpression(FunctionCallExpression functionCallExpression, Scope scope)
     {
         if (!StandardLibrary.Functions.ContainsKey(functionCallExpression.FunctionName))
@@ -166,8 +164,6 @@ public class GSharpEvaluator
             case TokenType.ModuleToken:
                 CheckTypes(binaryExpression, left, right);
                 return (double)left % (double)right;
-            case TokenType.ArrobaToken:
-                return left.ToString() + right.ToString();
             case TokenType.SingleAndToken:
                 CheckTypes(binaryExpression, left, right);
                 return (bool)left && (bool)right;

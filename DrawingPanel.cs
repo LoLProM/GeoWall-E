@@ -7,13 +7,14 @@ public partial class DrawingPanel : Panel
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-	}
 
+	}
 	public override void _Draw()
 	{
 		// DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
@@ -28,6 +29,7 @@ public partial class DrawingPanel : Panel
 		var points = new Vector2[] { new Vector2(100, 100) };
 		var uvs = new Vector2[] { new Vector2(100, 100) };
 		var colors = new Color[] { Colors.Black };
+		
 		// DrawPrimitive(points, colors, uvs);
 
 		DrawCircle(new Vector2(100, 100), 5, Colors.Black);
@@ -50,7 +52,6 @@ public partial class DrawingPanel : Panel
 		var result = evaluator.Evaluate();
 
 		GD.Print(result);
-
 	}
 }
 

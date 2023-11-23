@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace GSharpProject;
-
 class Parser
 {
 	private int position;
@@ -38,30 +37,68 @@ class Parser
 		}
 		throw new Exception($"!SYNTAX ERROR : Not find {type} after {LookAhead(-1).Type} {LookAhead(-1).Text} in position {position}");
 	}
-
 	public ASTree Parse()
 	{
 		Scope scope = new Scope();
-		var expression = ParseAny();
-		var endOfFileToken = MatchToken(TokenType.EndOffLineToken);
-		return new ASTree(expression, endOfFileToken);
+		var statement = ParseGSharpCollection();
+		return new ASTree(statement);
 	}
-	private GSharpExpression ParseAny()
+	private StatementCollection ParseGSharpCollection()
 	{
-		if (CurrentToken.Type is TokenType.Identifier)
-		{
-			return ParseFunctionDeclaration();
-		}
-		return ParseExpression();
-	}
+		var currentExpression = ParseExpression();
 
+		if (CurrentToken.Type == TokenType.EndOffLineToken)
+		{
+			var comma = MatchToken(TokenType.EndOffLineToken);
+			var childCollection = ParseGSharpCollection();
+			return new StatementCollection(currentExpression,childCollection);
+		}
+		else
+		{
+			return new StatementCollection(currentExpression,null);
+		}
+	}
 	private Point ParsePoint()
 	{
 		var pointKeyWord = MatchToken(TokenType.Point);
 		var pointId = MatchToken(TokenType.Identifier);
+
+		if (LookAhead(1).Type is TokenType.SingleEqualToken)
+		{
+			var equalToken = MatchToken(TokenType.SingleEqualToken);
+			var coordinates = ParseCoordinates();
+			var x = int.Parse(coordinates[0]);
+			var y = int.Parse(coordinates[1]);
+			return new Point(x,y,pointId.Text);
+		}
 		return new Point(pointId.Text);
 	}
-	private FunctionDeclarationExpression ParseFunctionDeclaration()
+    private List<string> ParseCoordinates()
+    {
+		MatchToken(TokenType.OpenParenthesisToken);
+		var coordinates = new List<string>();
+		if (CurrentToken.Type is TokenType.CloseParenthesisToken)
+		{
+			TokenAhead();
+			return coordinates;
+		}
+		coordinates.Add(CurrentToken.Text);
+		TokenAhead();
+		while (CurrentToken.Type == TokenType.ColonToken)
+		{
+			TokenAhead();
+			if (CurrentToken.Type is not TokenType.NumberToken)
+			{
+				throw new Exception($"! SEMANTIC ERROR : Coordinates must be a number");
+			}
+			coordinates.Add(CurrentToken.Text);
+			TokenAhead();
+		}
+		TokenAhead();
+		return coordinates;
+    }
+
+    private FunctionDeclarationExpression ParseFunctionDeclaration()
 	{
 		var functionName = MatchToken(TokenType.Identifier);
 		var functionParameters = ParseParameters();
@@ -84,13 +121,13 @@ class Parser
 	private List<string> ParseParameters()
 	{
 		MatchToken(TokenType.OpenParenthesisToken);
-		var parameters = new List<string>();
+		var coordinates = new List<string>();
 		if (CurrentToken.Type is TokenType.CloseParenthesisToken)
 		{
 			TokenAhead();
-			return parameters;
+			return coordinates;
 		}
-		parameters.Add(CurrentToken.Text);
+		coordinates.Add(CurrentToken.Text);
 		TokenAhead();
 		while (CurrentToken.Type == TokenType.ColonToken)
 		{
@@ -99,20 +136,20 @@ class Parser
 			{
 				throw new Exception($"! SEMANTIC ERROR : Parameters must be a valid identifier");
 			}
-			if (parameters.Contains(CurrentToken.Text))
+			if (coordinates.Contains(CurrentToken.Text))
 			{
 				throw new Exception($"! SEMANTIC ERROR : A parameter with the name '{CurrentToken.Text}' already exists insert another parameter name");
 			}
-			parameters.Add(CurrentToken.Text);
+			coordinates.Add(CurrentToken.Text);
 			TokenAhead();
 		}
 		TokenAhead();
-		return parameters;
+		return coordinates;
 	}
 	private GSharpExpression ParseFunctionCall(string identifier)
 	{
 		TokenAhead();
-		var parameters = new List<GSharpExpression>();
+		var coordinates = new List<GSharpExpression>();
 
 		MatchToken(TokenType.OpenParenthesisToken);
 		while (true)
@@ -122,7 +159,7 @@ class Parser
 				break;
 			}
 			var expression = ParseExpression();
-			parameters.Add(expression);
+			coordinates.Add(expression);
 			if (CurrentToken.Type == TokenType.ColonToken)
 			{
 				TokenAhead();
@@ -130,7 +167,7 @@ class Parser
 		}
 		MatchToken(TokenType.CloseParenthesisToken);
 
-		return new FunctionCallExpression(identifier, parameters);
+		return new FunctionCallExpression(identifier, coordinates);
 	}
 	private GSharpExpression ParseIdentifierOrFunctionCall()
 	{

@@ -9,7 +9,6 @@ public class FunctionCallExpression : GSharpExpression
         FunctionName = functionName;
         Parameters = parameters;
     }
-
     public string FunctionName { get; }
     public List<GSharpExpression> Parameters { get; }
 }

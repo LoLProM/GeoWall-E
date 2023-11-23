@@ -220,14 +220,6 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null;
             }
         }
-        else if (OperatorToken.Type is TokenType.ArrobaToken)
-        {
-            if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(string))
-            {
-                return typeof(string);
-            }
-            return null;
-        }
         throw new Exception($"!SEMANTIC ERROR : Invalid expression: Can't operate {Left.ExpressionType} with {Right.ExpressionType} using {OperatorToken.Text}");
     }
 }

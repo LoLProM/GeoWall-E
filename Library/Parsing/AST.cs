@@ -2,13 +2,11 @@ namespace GSharpProject
 {
     class ASTree
     {
-        public ASTree(GSharpExpression root, Token endOfLineToken)
+        public ASTree(GSharpExpression root)
         {
             Root = root;
-            EndOfLineToken = endOfLineToken;
         }
         public GSharpExpression Root { get; }
-        public Token EndOfLineToken { get; }
         public static ASTree Parse(string text)
         {
             var parser = new Parser(text);
