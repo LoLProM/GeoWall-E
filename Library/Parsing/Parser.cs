@@ -73,6 +73,7 @@ class Parser
 		}
 		return new Point(pointId.Text);
 	}
+	
     private List<string> ParseCoordinates()
     {
 		MatchToken(TokenType.OpenParenthesisToken);
@@ -97,6 +98,36 @@ class Parser
 		TokenAhead();
 		return coordinates;
     }
+	private Line ParseLine()
+	{
+		var lineKeyWord = MatchToken(TokenType.Circle);
+		var circleId = MatchToken(TokenType.Identifier);
+
+		if (LookAhead(1).Type is TokenType.OpenParenthesisToken)
+		{
+			var openParenthesisToken = MatchToken(TokenType.OpenParenthesisToken);
+
+			//Aqui se hace necesario una estructura que tenga a todos los objetos definidos
+		    var p1 = MatchToken(TokenType.Identifier);
+			//Point P1 = Estructura[p1];
+			
+			return new Line(p1,p2);
+		}
+		return new Line();
+
+	}
+	private Segment ParseSegment()
+	{
+		
+	}
+	private Ray ParseRay()
+	{
+		
+	}
+	private Circle ParseCircle()
+	{
+
+	}
 
     private FunctionDeclarationExpression ParseFunctionDeclaration()
 	{

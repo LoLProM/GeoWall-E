@@ -19,6 +19,10 @@ public class GSharpLiteralExpression : GSharpExpression
     public Token LiteralToken { get; }
     public object Value { get; }
 }
+public class GSharpSequence : GSharpExpression
+{
+    //public  GSharpSequence(Token openKey, List<Token> elements,  Token closeKey)
+}
 
 
 

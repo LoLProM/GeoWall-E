@@ -34,6 +34,17 @@ public static class StandardLibrary
             ["log10"] = new FunctionDeclarationExpression("log10", new() { "p" }, new FunctionReference((scope) => Math.Log10((double)scope.GetValue("p")))),
 
             ["print"] = new FunctionDeclarationExpression("print", new() { "x" }, new FunctionReference((scope) => scope.GetValue("x").ToString()!)),
+            
+            ["measure"] = new FunctionDeclarationExpression("measure", new() {"p1", "p2"}, new FunctionReference((scope) => Utiles.EuclideanDistance((Point)scope.GetValue("p1"),(Point)scope.GetValue("p2")))  )
         };
+    }
+}
+public static class Utiles
+{
+    public static double EuclideanDistance(Point p1, Point p2)
+    {
+       double x = Math.Pow((p1.X- p2.X),2);
+       double y = Math.Pow((p1.Y- p2.Y),2);
+       return Math.Sqrt(x+y);
     }
 }
