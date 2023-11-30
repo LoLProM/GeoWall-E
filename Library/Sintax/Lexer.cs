@@ -21,6 +21,7 @@ class Lexer
             var token = GetToken(match);
             Tokens.Add(token);
         }
+        Tokens.Add(new Token("", TokenType.END, Tokens.Count - 1, null));
     }
     private Token GetToken(Match match)
     {
@@ -96,6 +97,10 @@ class Lexer
                 return new Token("(", TokenType.OpenParenthesisToken, match.Index, null);
             case ")":
                 return new Token(")", TokenType.CloseParenthesisToken, match.Index, null);
+            case "{":
+                return new Token("{", TokenType.OpenBraceToken, match.Index, null);
+            case "}":
+                return new Token("}", TokenType.CloseBraceToken, match.Index, null);
             case "!":
                 return new Token("!", TokenType.NotToken, match.Index, null);
             case "<":
@@ -122,6 +127,8 @@ class Lexer
                 return new Token("%", TokenType.ModuleToken, match.Index, null);
             case ",":
                 return new Token(",", TokenType.ColonToken, match.Index, null);
+            case "...":
+                return new Token("...", TokenType.ThreePointsToken, match.Index, null);
         }
         throw new Exception($"! LEXICAL ERROR : '{match.Value}' is not a valid token");
     }

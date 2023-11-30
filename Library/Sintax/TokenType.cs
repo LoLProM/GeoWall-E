@@ -48,4 +48,9 @@ public enum TokenType
     Circle,
     Ray,
     Segment,
+    Arc,
+    OpenBraceToken,
+    CloseBraceToken,
+    ThreePointsToken,
+    END
 }

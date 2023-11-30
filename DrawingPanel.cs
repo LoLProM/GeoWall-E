@@ -1,6 +1,7 @@
 using Godot;
 using GSharpProject;
 using System;
+using System.Collections.Generic;
 
 public partial class DrawingPanel : Panel
 {
@@ -17,8 +18,8 @@ public partial class DrawingPanel : Panel
 	}
 	public override void _Draw()
 	{
-		// DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
-		// DrawRect(new Rect2(0.5f, 0.5f, 100f, 100f), Colors.Green);
+		// 	DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
+		// 	DrawRect(new Rect2(0.5f, 0.5f, 100f, 100f), Colors.Green);
 
 		// DrawLine(new Vector2(100f, 100f), new Vector2(200, 200f), Colors.Black, 100);
 
@@ -29,12 +30,12 @@ public partial class DrawingPanel : Panel
 		var points = new Vector2[] { new Vector2(100, 100) };
 		var uvs = new Vector2[] { new Vector2(100, 100) };
 		var colors = new Color[] { Colors.Black };
-		
+
 		// DrawPrimitive(points, colors, uvs);
 
 		DrawCircle(new Vector2(100, 100), 5, Colors.Black);
 
-		// DrawLine(new Vector2(100, 100), new Vector2(101, 101), Colors.Black, 10);
+		DrawLine(new Vector2(100, 100), new Vector2(200, 200), Colors.Black, 10);
 	}
 
 	/// <summary>
@@ -46,12 +47,17 @@ public partial class DrawingPanel : Panel
 		var codeEdit = GetNode<TextEdit>("../CodeEdit");
 		var code = codeEdit.Text;
 
-		var tree = ASTree.Parse(code);
+		List<GSharpExpression> tree = StatementsTree.Create(code);
 
-		var evaluator = new GSharpEvaluator(tree.Root);
-		var result = evaluator.Evaluate();
+		GSharpEvaluator evaluator;
+		object result;
+		foreach (var i in tree)
+		{
+			evaluator = new GSharpEvaluator(i);
+			result = evaluator.Evaluate();
+			GD.Print(result);
+		}
 
-		GD.Print(result);
 	}
 }
 

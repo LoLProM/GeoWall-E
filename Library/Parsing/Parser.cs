@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Godot;
 
 namespace GSharpProject;
 class Parser
 {
-	private int position;
+	private int position = 0;
 	private List<Token> tokens;
 	public Parser(string text)
 	{
@@ -37,103 +38,40 @@ class Parser
 		}
 		throw new Exception($"!SYNTAX ERROR : Not find {type} after {LookAhead(-1).Type} {LookAhead(-1).Text} in position {position}");
 	}
-	public ASTree Parse()
+	public List<GSharpExpression> Parse()
 	{
-		Scope scope = new Scope();
-		var statement = ParseGSharpCollection();
-		return new ASTree(statement);
+		var statements = ParseGSharpStatementCollection();
+		return statements;
 	}
-	private StatementCollection ParseGSharpCollection()
+	private List<GSharpExpression> ParseGSharpStatementCollection()
 	{
-		var currentExpression = ParseExpression();
-
-		if (CurrentToken.Type == TokenType.EndOffLineToken)
+		List<GSharpExpression> statements = new();
+		while (CurrentToken.Type is not TokenType.END)
 		{
+			var expression = ParseExpression();
+			statements.Add(expression);
 			var comma = MatchToken(TokenType.EndOffLineToken);
-			var childCollection = ParseGSharpCollection();
-			return new StatementCollection(currentExpression,childCollection);
 		}
-		else
-		{
-			return new StatementCollection(currentExpression,null);
-		}
+		return statements;
 	}
-	private Point ParsePoint()
+
+	private GSharpExpression ParseMatchExpression()
 	{
-		var pointKeyWord = MatchToken(TokenType.Point);
-		var pointId = MatchToken(TokenType.Identifier);
-
-		if (LookAhead(1).Type is TokenType.SingleEqualToken)
-		{
-			var equalToken = MatchToken(TokenType.SingleEqualToken);
-			var coordinates = ParseCoordinates();
-			var x = int.Parse(coordinates[0]);
-			var y = int.Parse(coordinates[1]);
-			return new Point(x,y,pointId.Text);
-		}
-		return new Point(pointId.Text);
+		var identifiers = ParseParameters();
+		MatchToken(TokenType.SingleEqualToken);
+		var sequence = ParseSequence();
+		return new MatchExpression(identifiers,sequence);
 	}
-	
-    private List<string> ParseCoordinates()
-    {
-		MatchToken(TokenType.OpenParenthesisToken);
-		var coordinates = new List<string>();
-		if (CurrentToken.Type is TokenType.CloseParenthesisToken)
-		{
-			TokenAhead();
-			return coordinates;
-		}
-		coordinates.Add(CurrentToken.Text);
-		TokenAhead();
-		while (CurrentToken.Type == TokenType.ColonToken)
-		{
-			TokenAhead();
-			if (CurrentToken.Type is not TokenType.NumberToken)
-			{
-				throw new Exception($"! SEMANTIC ERROR : Coordinates must be a number");
-			}
-			coordinates.Add(CurrentToken.Text);
-			TokenAhead();
-		}
-		TokenAhead();
-		return coordinates;
-    }
-	private Line ParseLine()
+	private GSharpSequence ParseSequence()
 	{
-		var lineKeyWord = MatchToken(TokenType.Circle);
-		var circleId = MatchToken(TokenType.Identifier);
-
-		if (LookAhead(1).Type is TokenType.OpenParenthesisToken)
-		{
-			var openParenthesisToken = MatchToken(TokenType.OpenParenthesisToken);
-
-			//Aqui se hace necesario una estructura que tenga a todos los objetos definidos
-		    var p1 = MatchToken(TokenType.Identifier);
-			//Point P1 = Estructura[p1];
-			
-			return new Line(p1,p2);
-		}
-		return new Line();
-
-	}
-	private Segment ParseSegment()
-	{
-		
-	}
-	private Ray ParseRay()
-	{
-		
-	}
-	private Circle ParseCircle()
-	{
-
+		throw new NotImplementedException();
 	}
 
-    private FunctionDeclarationExpression ParseFunctionDeclaration()
+	private FunctionDeclarationExpression ParseFunctionDeclaration()
 	{
 		var functionName = MatchToken(TokenType.Identifier);
 		var functionParameters = ParseParameters();
-		var equalToken = MatchToken(TokenType.SingleEqualToken);
+		MatchToken(TokenType.SingleEqualToken);
 		var functionBody = ParseExpression();
 		var functionDeclaration = new FunctionDeclarationExpression(functionName.Text, functionParameters, functionBody);
 
@@ -145,10 +83,8 @@ class Parser
 		{
 			throw new Exception($"! FUNCTION ERROR : Function {functionName.Text} is already defined");
 		}
-
 		return functionDeclaration;
 	}
-
 	private List<string> ParseParameters()
 	{
 		MatchToken(TokenType.OpenParenthesisToken);
@@ -228,7 +164,7 @@ class Parser
 		var equal = MatchToken(TokenType.SingleEqualToken);
 		var expression = ParseExpression();
 
-		if (CurrentToken.Type == TokenType.EndOffLineToken)
+		if (CurrentToken.Type == TokenType.EndOffLineToken && LookAhead(1).Type is not TokenType.InToken)
 		{
 			var comma = MatchToken(TokenType.EndOffLineToken);
 			var letChildExpression = ParseLetExpression();
@@ -296,10 +232,98 @@ class Parser
 				return ParseIdentifierOrFunctionCall();
 			case TokenType.Point:
 				return ParsePoint();
+			case TokenType.Line:
+				return ParseLine();
+			case TokenType.Arc:
+				return ParseArc();
+			case TokenType.Segment:
+				return ParseSegment();
+			case TokenType.Circle:
+				return ParseCircle();
+			case TokenType.Ray:
+				return ParseRay();
 			default:
 				throw new Exception("! SYNTAX ERROR : Invalid Expression");
 		}
 	}
+
+	private GSharpExpression ParsePoint()
+	{
+		var pointKeyword = MatchToken(TokenType.Point);
+		var pointId = MatchToken(TokenType.Identifier);
+
+		if (LookAhead(0).Type is TokenType.SingleEqualToken)
+		{
+			var equalToken = MatchToken(TokenType.SingleEqualToken);
+			var coordinates = ParseCoordinates();
+			return new GSharpPointExpression(pointKeyword, pointId.Text, coordinates);
+		}
+		return new GSharpPointExpression(pointKeyword, pointId.Text);
+	}
+	private List<string> ParseCoordinates()
+	{
+		MatchToken(TokenType.OpenParenthesisToken);
+		var coordinates = new List<string>();
+		if (CurrentToken.Type is TokenType.CloseParenthesisToken)
+		{
+			TokenAhead();
+			return coordinates;
+		}
+		coordinates.Add(CurrentToken.Text);
+		TokenAhead();
+		while (CurrentToken.Type == TokenType.ColonToken)
+		{
+			TokenAhead();
+			if (CurrentToken.Type is not TokenType.NumberToken)
+			{
+				throw new Exception($"! SEMANTIC ERROR : Coordinates must be a number");
+			}
+			coordinates.Add(CurrentToken.Text);
+			TokenAhead();
+		}
+		TokenAhead();
+		return coordinates;
+	}
+	private GSharpExpression ParseLine()
+	{
+		var lineKeyword = MatchToken(TokenType.Line);
+		var lineId = MatchToken(TokenType.Identifier);
+
+		if (LookAhead(0).Type is TokenType.OpenParenthesisToken)
+		{
+			var parameters = ParseParameters();
+			return new GSharpLineExpression(lineKeyword, parameters);
+		}
+		return new GSharpLineExpression(lineKeyword, lineId.Text);
+	}
+	private GSharpExpression ParseSegment()
+	{
+		var segmentKeyword = MatchToken(TokenType.Segment);
+		var segmentId = MatchToken(TokenType.Identifier);
+
+		if (LookAhead(0).Type is TokenType.OpenParenthesisToken)
+		{
+			var parameters = ParseParameters();
+			return new GSharpSegmentExpression(segmentKeyword, segmentId.Text);
+		}
+		return new GSharpSegmentExpression(segmentKeyword, segmentId.Text);
+	}
+	private GSharpExpression ParseRay()
+	{
+		throw new NotImplementedException();
+
+	}
+	private GSharpExpression ParseCircle()
+	{
+		throw new NotImplementedException();
+
+	}
+	private GSharpExpression ParseArc()
+	{
+		throw new NotImplementedException();
+	}
+
+
 	private GSharpExpression ParseParenthesizedExpression()
 	{
 		var left = TokenAhead();
@@ -319,5 +343,5 @@ class Parser
 		var doubleNumber = Convert.ToDouble(number.Value);
 		return new GSharpLiteralExpression(number, doubleNumber);
 	}
-  
+
 }

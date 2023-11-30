@@ -1,5 +1,5 @@
 using System;
-using GSharpProject;
+namespace GSharpProject;
 
 public class AssigmentExpression : GSharpExpression
 {   
@@ -10,10 +10,8 @@ public class AssigmentExpression : GSharpExpression
         Expression = expression;
         ExpressionType = Expression.ExpressionType;
     }
-
     public string Identifier { get; }
     public Token EqualToken { get; }
     public GSharpExpression Expression { get; }
-
     public TokenType tokenType => TokenType.AssigmentExpression;
 }
