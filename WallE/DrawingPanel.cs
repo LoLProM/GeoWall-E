@@ -30,7 +30,7 @@ public partial class DrawingPanel : Panel
 
 		var points = new Vector2[] { new Vector2(100, 100) };
 		var uvs = new Vector2[] { new Vector2(100, 100) };
-		var colors = new Color[] { Colors.Black };
+		var colors = new Godot.Color[] { Colors.Black };
 
 		// DrawPrimitive(points, colors, uvs);
 

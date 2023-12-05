@@ -433,20 +433,48 @@ class Parser
 		}
 		return new GSharpSegmentExpression(segmentKeyword, segmentId.Text);
 	}
-	private GSharpExpression ParseRay()
-	{
-		throw new NotImplementedException();
+    private GSharpExpression ParseRay()
+    {
+        var rayKeyword = MatchToken(TokenType.Ray);
+        if (LookAhead(1).Type is TokenType.Identifier)
+        {
+            var rayId = MatchToken(TokenType.Identifier);
+            return new GSharpRayExpression(rayKeyword, rayId.Text);
+        }
+        var parameters = ParseParameters();
+        return new GSharpRayExpression(rayKeyword, parameters);
 
-	}
-	private GSharpExpression ParseCircle()
-	{
-		throw new NotImplementedException();
+    }
+    private GSharpExpression ParseCircle()
+    {
+        var circleKeyWord = MatchToken(TokenType.Circle);
+        if (LookAhead(1).Type is TokenType.Identifier)
+        {
+            var circleId = MatchToken(TokenType.Identifier);
+            return new GSharpCircleExpression(circleKeyWord, circleId.Text);
+        }
+        var parameters = ParseParameters();
+        return new GSharpCircleExpression(circleKeyWord, parameters);
+    }
 
-	}
-	private GSharpExpression ParseArc()
-	{
-		throw new NotImplementedException();
-	}
+    private GSharpExpression ParseArc()
+    {
+        var arcKeyWord = MatchToken(TokenType.Arc);
+        if (LookAhead(1).Type is TokenType.Identifier)
+        {
+            var arcId = MatchToken(TokenType.Identifier);
+            return new GSharpCircleExpression(arcKeyWord, arcId.Text);
+        }
+        var parameters = ParseParameters();
+
+        return new GSharpArcExpression(arcKeyWord, parameters);
+    }
+    private GSharpColorExpression ParseColor()
+    {
+        var colorKeyWord = MatchToken(TokenType.Color);
+        var colorId = MatchToken(TokenType.Identifier);
+        return new GSharpColorExpression(colorKeyWord, colorId.Text);
+    }
 	private GSharpExpression ParseParenthesizedExpression()
 	{
 		var left = TokenAhead();

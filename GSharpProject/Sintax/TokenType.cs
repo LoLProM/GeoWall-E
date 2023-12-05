@@ -52,4 +52,5 @@ public enum TokenType
     Ray,
     Segment,
     Arc,
+    Color,
 }

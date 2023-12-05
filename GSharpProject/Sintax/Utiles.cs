@@ -21,22 +21,6 @@ public static class Utiles
     {
         Type _f1 = f1.GetType();
         Type _f2 = f2.GetType();
-<<<<<<< Updated upstream
-
-        switch (_fi)
-        {
-            case Circle when _f2 == typeof(Circle):
-                return InterceptionCircle((Circle)f1, (Circle)f2);
-            case Circle when _f2 == typeof(Line):
-                return InterceptionLine_Circle((Circle)f1, (Line)f2);
-            case Line when _f2 == typeof(Circle):
-                return InterceptionLine_Circle((Circle)f2, (Line)f1);
-            case Line when _f2 == typeof(Line):
-                return InterceptionLine((Line)f2, (Line)f1);
-            default:
-                return new List<Point>();
-        }
-=======
         
         /*switch (_f1)
         {
@@ -53,7 +37,6 @@ public static class Utiles
         }*/
 
         return new List<Point>();
->>>>>>> Stashed changes
     }
 
     public static List<Point> InterceptionCircle(Circle c1, Circle c2)
@@ -72,11 +55,7 @@ public static class Utiles
         Point middle = MiddlePoint(c1.Center, c2.Center);
 
         double x_intercept1 = middle.X + h * (c2.Center.X - c1.Center.X) / centerDistance;
-<<<<<<< Updated upstream
-        double y_intercept1 = middle.y - h * (c2.Center.X - c1.Center.X) / centerDistance;
-=======
         double y_intercept1 = middle.Y - h * (c2.Center.X - c1.Center.X) / centerDistance;
->>>>>>> Stashed changes
         double x_intercept2 = middle.X - h * (c2.Center.X - c1.Center.X) / centerDistance;
         double y_intercept2 = middle.X + h * (c2.Center.X - c1.Center.X) / centerDistance;
 
@@ -94,8 +73,6 @@ public static class Utiles
     }
     public static List<Point> InterceptionLine(Line l1, Line l2)
     {
-<<<<<<< Updated upstream
-=======
         double x1 = l1.StartPoint.X;
         double y1 = l1.StartPoint.Y;
         double x2 = l1.EndPoint.X;
@@ -105,24 +82,11 @@ public static class Utiles
         double x4 = l2.EndPoint.X;
         double y4 = l2.EndPoint.Y;
 
->>>>>>> Stashed changes
         double direction = (l1.StartPoint.X - l1.EndPoint.X) * (l2.StartPoint.Y - l2.EndPoint.Y) -
         (l1.StartPoint.Y - l1.EndPoint.Y) * (l2.StartPoint.X - l2.EndPoint.X);
 
         if (direction == 0)
         {
-<<<<<<< Updated upstream
-            if (Contiene(l1, l2.StartPoint))
-                return new List<Point>();//Modificar cuando se implemente Pointsof
-            return new List<Point>();
-        }
-        return new List<Point>();
-    }
-    public static bool Contiene(Line l1, Point p1)
-    {
-        return true;
-    }
-=======
             if (l1.PointBelong(l2.EndPoint))
                 return new List<Point>();//Modificar cuando se implemente Pointsof
             return new List<Point>();
@@ -139,6 +103,5 @@ public static class Utiles
         return new List<Point>();
     }
     
->>>>>>> Stashed changes
 
 }
