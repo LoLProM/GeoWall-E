@@ -48,4 +48,13 @@ public enum TokenType
     Circle,
     Ray,
     Segment,
+<<<<<<< Updated upstream
+=======
+    Arc,
+    OpenBraceToken,
+    CloseBraceToken,
+    ThreePointsToken,
+    END,
+    Color
+>>>>>>> Stashed changes
 }

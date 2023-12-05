@@ -42,6 +42,7 @@ public class GSharpEvaluator
                 return EvaluateFunctionCallExpression(functionCallExpression, scope);
             case FunctionReference functionReference:
                 return EvaluateFunctionReference(functionReference, scope);
+<<<<<<< Updated upstream
             
         }
         throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
@@ -145,6 +146,164 @@ public class GSharpEvaluator
         var left = EvaluateExpression(binaryExpression.Left, scope);
         var right = EvaluateExpression(binaryExpression.Right, scope);
 
+=======
+            case GSharpPointExpression pointExpression:
+                return EvaluatePointExpression(pointExpression, scope);
+            case GSharpLineExpression lineExpression:
+                return EvaluateLineExpression(lineExpression, scope);
+            case GSharpArcExpression arcExpression:
+                return EvaluateArcExpression(arcExpression, scope);
+            case GSharpSegmentExpression segmentExpression:
+                return EvaluateSegmentExpression(segmentExpression, scope);
+            case GSharpCircleExpression circleExpression:
+                return EvaluateCircleExpression(circleExpression, scope);
+            case GSharpRayExpression rayExpression:
+                return EvaluateRayExpression(rayExpression, scope);
+        }
+        throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
+    }
+
+    private object EvaluateRayExpression(GSharpRayExpression rayExpression, Scope scope)
+    {
+        throw new NotImplementedException();
+    }
+
+    private object EvaluateSegmentExpression(GSharpSegmentExpression segmentExpression, Scope scope)
+    {
+        throw new NotImplementedException();
+    }
+
+    private object EvaluateCircleExpression(object circleExpression, Scope scope)
+    {
+        throw new NotImplementedException();
+    }
+
+    private object EvaluateArcExpression(GSharpArcExpression arcExpression, Scope scope)
+    {
+        throw new NotImplementedException();
+    }
+
+    private object EvaluateLineExpression(GSharpLineExpression lineExpression, Scope scope)
+    {
+        throw new NotImplementedException();
+    }
+    private object EvaluatePointExpression(GSharpPointExpression pointExpression, Scope scope)
+    {
+        Point point;
+        if (pointExpression.Coordinates is not null)
+        {
+            var coordinates = pointExpression.Coordinates;
+            var x = double.Parse(coordinates[0]);
+            var y = double.Parse(coordinates[1]);
+            point = new Point(x, y, pointExpression.Identifier);
+            scope.AddVariable(pointExpression.Identifier, point);
+            return point;
+        }
+        point = new Point(pointExpression.Identifier);
+        scope.AddVariable(pointExpression.Identifier, point);
+        return point;
+    }
+    private static object EvaluateFunctionReference(FunctionReference functionReference, Scope scope)
+    {
+        return functionReference.Eval(scope);
+    }
+    private object EvaluateFunctionCallExpression(FunctionCallExpression functionCallExpression, Scope scope)
+    {
+        if (!StandardLibrary.Functions.ContainsKey(functionCallExpression.FunctionName))
+        {
+            throw new Exception($"!FUNCTION ERROR : Function {functionCallExpression.FunctionName} is not defined");
+        }
+        var functionDeclaration = StandardLibrary.Functions[functionCallExpression.FunctionName];
+        if (functionDeclaration?.Arguments.Count != functionCallExpression.Parameters.Count)
+        {
+            throw new Exception($"!FUNCTION ERROR : Function {functionCallExpression.FunctionName} does not have {functionCallExpression.Parameters.Count} parameters but {StandardLibrary.Functions[functionCallExpression.FunctionName]?.Arguments.Count} parameters");
+        }
+
+
+        var parameters = functionCallExpression.Parameters;
+        var arguments = functionDeclaration.Arguments;
+
+        var functionCallScope = new Scope();
+        foreach (var (arg, param) in arguments.Zip(parameters))
+        {
+            var evaluatedParameter = EvaluateExpression(param, scope.BuildChildScope());
+            functionCallScope.AddVariable(arg, evaluatedParameter);
+        }
+
+        return EvaluateExpression(functionDeclaration.FunctionBody, functionCallScope);
+    }
+    private object EvaluateLetInExpression(Let_In_Expression letInExpression, Scope scope)
+    {
+        var inScope = EvaluateLetExpression(letInExpression.LetExpression, scope);
+        var inExpression = EvaluateExpression(letInExpression.InExpression, inScope);
+        return inExpression;
+    }
+    private Scope EvaluateLetExpression(LetExpression letExpression, Scope scope)
+    {
+        var evaluateLetExpression = EvaluateExpression(letExpression.Expression, scope.BuildChildScope());
+        scope.AddVariable(letExpression.Identifier.Text, evaluateLetExpression);
+        if (letExpression.LetChildExpression is null)
+        {
+            return scope;
+        }
+        return EvaluateLetExpression(letExpression.LetChildExpression, scope.BuildChildScope());
+    }
+
+    private object EvaluateIfElseStatement(If_ElseStatement ifElseStatement, Scope scope)
+    {
+        var condition = EvaluateExpression(ifElseStatement.IfCondition, scope.BuildChildScope());
+        bool boolCondition = false;
+        boolCondition = CheckBooleanType(condition);
+        if (boolCondition)
+        {
+            return EvaluateExpression(ifElseStatement.ThenStatement, scope.BuildChildScope());
+        }
+        else
+        {
+            return EvaluateExpression(ifElseStatement.ElseClause, scope.BuildChildScope());
+        }
+    }
+    private static bool CheckBooleanType(object condition)
+    {
+        bool boolCondition;
+        if (condition.GetType() == typeof(bool))
+        {
+            boolCondition = (bool)condition;
+        }
+        else
+        {
+            throw new Exception("! SEMANTIC ERROR : If-ELSE expressions must have a boolean condition");
+        }
+        return boolCondition;
+    }
+    private object EvaluateParenthesesExpression(GSharpParenthesesExpression parenthesesExpression, Scope scope)
+    {
+        return EvaluateExpression(parenthesesExpression.InsideExpression, scope.BuildChildScope());
+    }
+    private object EvaluateUnaryExpression(GSharpUnaryExpression unary, Scope scope)
+    {
+        var value = EvaluateExpression(unary.InternalExpression, scope);
+        if (unary.OperatorToken.Type == TokenType.MinusToken)
+        {
+            if ((double)value == 0) return value;
+            return -(double)(value);
+        }
+        else if (unary.OperatorToken.Type == TokenType.PlusToken)
+        {
+            return value;
+        }
+        else if (unary.OperatorToken.Type == TokenType.NotToken)
+        {
+            return !(bool)value;
+        }
+        throw new Exception($"!SEMANTIC ERROR : Invalid unary operator {unary.OperatorToken}");
+    }
+    private object EvaluateBinaryExpression(GSharpBinaryExpression binaryExpression, Scope scope)
+    {
+        var left = EvaluateExpression(binaryExpression.Left, scope);
+        var right = EvaluateExpression(binaryExpression.Right, scope);
+
+>>>>>>> Stashed changes
         switch (binaryExpression.OperatorToken.Type)
         {
             case TokenType.PlusToken:
@@ -213,4 +372,8 @@ public class GSharpEvaluator
             throw new Exception($"!SEMANTIC ERROR : Invalid expression: Can't operate {left.GetType()} with {right.GetType()} using {binaryExpression.OperatorToken.Text}");
         }
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

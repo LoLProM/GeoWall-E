@@ -4,48 +4,70 @@ using System;
 
 public partial class DrawingPanel : Panel
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
 
-	}
+    }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
+    {
 
+<<<<<<< Updated upstream
 	}
 	public override void _Draw()
 	{
 		// DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
 		// DrawRect(new Rect2(0.5f, 0.5f, 100f, 100f), Colors.Green);
+=======
+    }
+    public override void _Draw()
+    {
+        // 	DrawLine(new Vector2(0.0f, 0.0f), new Vector2(2000f, 2000f), Colors.Green, 50);
+        // 	DrawRect(new Rect2(0.5f, 0.5f, 100f, 100f), Colors.Green);
+>>>>>>> Stashed changes
 
-		// DrawLine(new Vector2(100f, 100f), new Vector2(200, 200f), Colors.Black, 100);
+        // DrawLine(new Vector2(100f, 100f), new Vector2(200, 200f), Colors.Black, 100);
 
-		// Font defaultFont = ThemeDB.FallbackFont;
-		// int defaultFontSize = ThemeDB.FallbackFontSize;
-		// DrawString(defaultFont, new Vector2(200, 200), "Hello world", 0, -1, 100, Colors.Black);
+        // Font defaultFont = ThemeDB.FallbackFont;
+        // int defaultFontSize = ThemeDB.FallbackFontSize;
+        // DrawString(defaultFont, new Vector2(200, 200), "Hello world", 0, -1, 100, Colors.Black);
 
+<<<<<<< Updated upstream
 		var points = new Vector2[] { new Vector2(100, 100) };
 		var uvs = new Vector2[] { new Vector2(100, 100) };
 		var colors = new Color[] { Colors.Black };
 		
 		// DrawPrimitive(points, colors, uvs);
+=======
+        var points = new Vector2[] { new Vector2(100, 100) };
+        var uvs = new Vector2[] { new Vector2(100, 100) };
+        var colors = new Godot.Color[] { Colors.Black };
 
-		DrawCircle(new Vector2(100, 100), 5, Colors.Black);
+        // DrawPrimitive(points, colors, uvs);
+>>>>>>> Stashed changes
 
+        DrawCircle(new Vector2(100, 100), 5, Colors.Black);
+
+<<<<<<< Updated upstream
 		// DrawLine(new Vector2(100, 100), new Vector2(101, 101), Colors.Black, 10);
 	}
+=======
+        DrawLine(new Vector2(100, 100), new Vector2(200, 200), Colors.Black, 10);
+    }
+>>>>>>> Stashed changes
 
-	/// <summary>
-	/// Runs whenever the RunButton is pressed.
-	/// </summary>
-	private void _on_run_button_pressed()
-	{
-		// Get the code edit node and access the code text.
-		var codeEdit = GetNode<TextEdit>("../CodeEdit");
-		var code = codeEdit.Text;
+    /// <summary>
+    /// Runs whenever the RunButton is pressed.
+    /// </summary>
+    private void _on_run_button_pressed()
+    {
+        // Get the code edit node and access the code text.
+        var codeEdit = GetNode<TextEdit>("../CodeEdit");
+        var code = codeEdit.Text;
 
+<<<<<<< Updated upstream
 		var tree = ASTree.Parse(code);
 
 		var evaluator = new GSharpEvaluator(tree.Root);
@@ -53,6 +75,20 @@ public partial class DrawingPanel : Panel
 
 		GD.Print(result);
 	}
+=======
+        List<GSharpExpression> tree = StatementsTree.Create(code);
+
+        GSharpEvaluator evaluator;
+        object result;
+        foreach (var i in tree)
+        {
+            evaluator = new GSharpEvaluator(i);
+            result = evaluator.Evaluate();
+            GD.Print(result);
+        }
+
+    }
+>>>>>>> Stashed changes
 }
 
 

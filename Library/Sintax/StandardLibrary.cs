@@ -28,6 +28,7 @@ public static class StandardLibrary
             ["sqrt"] = new FunctionDeclarationExpression("sqrt", new() { "x" }, new FunctionReference((scope) => Math.Sqrt((double)scope.GetValue("x")))),
 
             ["log"] = new FunctionDeclarationExpression("log", new() { "b", "p" }, new FunctionReference((scope) => Math.Log((double)scope.GetValue("p"), (double)scope.GetValue("b")))),
+<<<<<<< Updated upstream
 
             ["log2"] = new FunctionDeclarationExpression("log2", new() { "p" }, new FunctionReference((scope) => Math.Log2((double)scope.GetValue("p")))),
 
@@ -41,4 +42,19 @@ public static class StandardLibrary
         };
     }
 
+=======
+
+            ["log2"] = new FunctionDeclarationExpression("log2", new() { "p" }, new FunctionReference((scope) => Math.Log2((double)scope.GetValue("p")))),
+
+            ["log10"] = new FunctionDeclarationExpression("log10", new() { "p" }, new FunctionReference((scope) => Math.Log10((double)scope.GetValue("p")))),
+
+            ["print"] = new FunctionDeclarationExpression("print", new() { "x" }, new FunctionReference((scope) => scope.GetValue("x").ToString()!)),
+
+            ["measure"] = new FunctionDeclarationExpression("measure", new() { "p1", "p2" }, new FunctionReference((scope) => Utiles.EuclideanDistance((Point)scope.GetValue("p1"), (Point)scope.GetValue("p2")))),
+
+            ["intercept"] = new FunctionDeclarationExpression("intercept", new() { "f1", "f2" }, new FunctionReference((scope) => Utiles.Interception(scope.GetValue("f1"), scope.GetValue("f2"))))
+        };
+    }
+>>>>>>> Stashed changes
 }
+
