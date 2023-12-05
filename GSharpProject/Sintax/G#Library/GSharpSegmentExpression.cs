@@ -22,3 +22,14 @@ public class GSharpSegmentExpression : GSharpPrimitive
     public List<string> Coordinates { get; }
     public string Identifier { get; }
 }
+public class Measure : GSharpExpression
+{
+    public Measure(Token keyWord, List<string> paramaters)
+    {
+        KeyWord = keyWord;
+        Paramaters = paramaters;
+    }
+
+    public Token KeyWord { get; }
+    public List<string> Paramaters { get; }
+}
