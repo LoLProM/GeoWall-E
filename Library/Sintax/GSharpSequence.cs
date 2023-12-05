@@ -7,7 +7,7 @@ public abstract class GSharpSequence : GSharpExpression
 }
 public class GSharpLiteralSequence : GSharpSequence
 {
-    public GSharpLiteralSequence(Token openKey, IEnumerable<GSharpPrimitive> elements, Token closeKey) 
+    public GSharpLiteralSequence(Token openKey, GSharpExpression[] elements, Token closeKey) 
     {
         OpenKey = openKey;
         Elements = elements;
@@ -15,35 +15,36 @@ public class GSharpLiteralSequence : GSharpSequence
     }
 
     public Token OpenKey { get; }
-    public IEnumerable<GSharpPrimitive> Elements { get; }
+    public GSharpExpression[] Elements { get; }
     public Token CloseKey { get; }
 }
 
-public class GSharpFiniteSequence : GSharpSequence
+public class GSharpRangeSequence : GSharpSequence
 {
-    public GSharpFiniteSequence(Token openKey, IEnumerable<GSharpLiteralExpression> elements, Token closeKey) 
+    public GSharpRangeSequence(Token openKey, GSharpLiteralExpression first, GSharpLiteralExpression last, Token closeKey) 
     {
         OpenKey = openKey;
-        Elements = elements;
+        First = first;
+        Last = last;
         CloseKey = closeKey;
     }
 
     public Token OpenKey { get; }
-    public IEnumerable<GSharpLiteralExpression> Elements { get; }
+    public GSharpLiteralExpression First { get; }
+    public GSharpLiteralExpression Last { get; }
     public Token CloseKey { get; }
 }
 
 public class GSharpInfiniteSequence : GSharpSequence
 {
-    public GSharpInfiniteSequence(Token openKey, IEnumerable<GSharpLiteralExpression> elements, Token closeKey) 
+    public GSharpInfiniteSequence(Token openKey, GSharpLiteralExpression first, Token closeKey) 
     {
         OpenKey = openKey;
-        Elements = elements;
+        First = first;
         CloseKey = closeKey;
     }
-
     public Token OpenKey { get; }
-    public IEnumerable<GSharpLiteralExpression> Elements { get; }
+    public GSharpLiteralExpression First { get; }
     public Token CloseKey { get; }
 }
 

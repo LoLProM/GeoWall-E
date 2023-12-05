@@ -53,6 +53,10 @@ public partial class DrawingPanel : Panel
 		object result;
 		foreach (var i in tree)
 		{
+			if (i is FunctionDeclarationExpression)
+			{
+				continue;
+			}
 			evaluator = new GSharpEvaluator(i);
 			result = evaluator.Evaluate();
 			GD.Print(result);

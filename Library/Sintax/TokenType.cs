@@ -29,15 +29,18 @@ public enum TokenType
     StringToken,
     ColonToken,
     Identifier,
-    SemiColonToken,
+    OpenBraceToken,
+    CloseBraceToken,
+    ThreePointsToken,
+    END,
 
     //Keywords
     IfKeyword,
     ElseKeyword,
     ThenKeyword,
-    AssigmentExpression,
 
     // Expressions
+    AssigmentExpression,
     LiteralExpression,
     BinaryExpression,
     UnaryExpression,
@@ -49,8 +52,4 @@ public enum TokenType
     Ray,
     Segment,
     Arc,
-    OpenBraceToken,
-    CloseBraceToken,
-    ThreePointsToken,
-    END
 }

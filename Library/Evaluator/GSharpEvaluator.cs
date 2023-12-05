@@ -56,8 +56,30 @@ public class GSharpEvaluator
 				return EvaluateCircleExpression(circleExpression, scope);
 			case GSharpRayExpression rayExpression:
 				return EvaluateRayExpression(rayExpression, scope);
+			case GSharpRangeSequence sequenceExpression:
+				return EvaluateFiniteSequenceExpression(sequenceExpression, scope);
+			case GSharpInfiniteSequence sequenceExpression:
+				return EvaluateInfiniteSequenceExpression(sequenceExpression, scope);
+			case GSharpLiteralSequence sequenceExpression:
+				return EvaluateLiteralSequenceExpression(sequenceExpression, scope);
+
 		}
 		throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
+	}
+
+	private object EvaluateLiteralSequenceExpression(GSharpLiteralSequence sequenceExpression, Scope scope)
+	{
+		throw new NotImplementedException();
+	}
+
+	private object EvaluateInfiniteSequenceExpression(GSharpInfiniteSequence sequenceExpression, Scope scope)
+	{
+		throw new NotImplementedException();
+	}
+
+	private object EvaluateFiniteSequenceExpression(object rayExpression, Scope scope)
+	{
+		throw new NotImplementedException();
 	}
 
 	private object EvaluateRayExpression(GSharpRayExpression rayExpression, Scope scope)
@@ -93,11 +115,11 @@ public class GSharpEvaluator
 			var x = double.Parse(coordinates[0]);
 			var y = double.Parse(coordinates[1]);
 			point = new Point(x, y, pointExpression.Identifier);
-			scope.AddVariable(pointExpression.Identifier,point);
+			scope.AddVariable(pointExpression.Identifier, point);
 			return point;
 		}
 		point = new Point(pointExpression.Identifier);
-		scope.AddVariable(pointExpression.Identifier,point);
+		scope.AddVariable(pointExpression.Identifier, point);
 		return point;
 	}
 	private static object EvaluateFunctionReference(FunctionReference functionReference, Scope scope)
