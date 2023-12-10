@@ -40,7 +40,7 @@ public enum TokenType
     ThenKeyword,
 
     // Expressions
-    AssigmentExpression,
+    AssignmentExpression,
     LiteralExpression,
     BinaryExpression,
     UnaryExpression,
@@ -53,4 +53,12 @@ public enum TokenType
     Segment,
     Arc,
     Color,
+    FunctionCall,
+    FunctionReference,
+    LiteralSequence,
+    RangeSequence,
+    InfiniteSequence,
+    LetIn,
+    Measure,
+    StatementsColl,
 }

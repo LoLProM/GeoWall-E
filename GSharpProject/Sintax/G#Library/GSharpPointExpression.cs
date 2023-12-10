@@ -21,4 +21,6 @@ public class GSharpPointExpression : GSharpPrimitive
         Identifier = identifier;
         Coordinates = coordinates;
     }
+    public override TokenType TokenType => TokenType.Point;
+
 }

@@ -11,6 +11,7 @@ namespace GSharpProject
         {
             this.function = function;
         }
+        public override TokenType TokenType => TokenType.FunctionReference;
         public object Eval(Scope param)
         {
             return function(param);

@@ -21,6 +21,8 @@ public class GSharpSegmentExpression : GSharpPrimitive
     public Token Segment { get; }
     public List<string> Coordinates { get; }
     public string Identifier { get; }
+    public override TokenType TokenType => TokenType.Segment;
+
 }
 public class Measure : GSharpExpression
 {
@@ -32,4 +34,6 @@ public class Measure : GSharpExpression
 
     public Token KeyWord { get; }
     public List<string> Paramaters { get; }
+    public override TokenType TokenType => TokenType.Measure;
+
 }

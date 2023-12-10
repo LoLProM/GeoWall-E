@@ -17,8 +17,8 @@ public class GSharpArcExpression : GSharpPrimitive
         Coordinates = coordinates;
         ExpressionType = typeof(Arc);
     }
-
     public Token Arc { get; }
     public List<string> Coordinates { get; }
     public string Identifier { get; }
+    public override TokenType TokenType => TokenType.Arc;
 }

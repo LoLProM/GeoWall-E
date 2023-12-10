@@ -9,7 +9,7 @@ public class GSharpParenthesesExpression : GSharpExpression
         CloseParenthesisToken = closeParenthesisToken;
         ExpressionType = insideExpression.ExpressionType;
     }
-    public TokenType Type => TokenType.ParenthesizedExpression;
+    public override TokenType TokenType => TokenType.ParenthesizedExpression;
     public Token OpenParenthesisToken { get; }
     public GSharpExpression InsideExpression { get; }
     public Token CloseParenthesisToken { get; }

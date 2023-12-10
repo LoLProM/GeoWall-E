@@ -21,4 +21,6 @@ public class GSharpCircleExpression : GSharpPrimitive
     public Token Circle { get; }
     public List<string> Coordinates { get; }
     public string Identifier { get; }
+    public override TokenType TokenType => TokenType.Circle;
+
 }

@@ -12,7 +12,7 @@ public class GSharpUnaryExpression : GSharpExpression
     }
 
     public Token OperatorToken { get; }
-    public TokenType Type => TokenType.UnaryExpression;
+    public override TokenType TokenType => TokenType.UnaryExpression;
     public GSharpExpression InternalExpression { get; }
     private Type GetUnaryExpressionType()
     {

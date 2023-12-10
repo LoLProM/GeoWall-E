@@ -56,12 +56,13 @@ public class GSharpEvaluator
 			case GSharpRayExpression rayExpression:
 				return EvaluateRayExpression(rayExpression, scope);
 			case GSharpRangeSequence sequenceExpression:
-				return EvaluateFiniteSequenceExpression(sequenceExpression, scope);
+				return EvaluateRangeSequenceExpression(sequenceExpression, scope);
 			case GSharpInfiniteSequence sequenceExpression:
 				return EvaluateInfiniteSequenceExpression(sequenceExpression, scope);
 			case GSharpLiteralSequence sequenceExpression:
 				return EvaluateLiteralSequenceExpression(sequenceExpression, scope);
-
+			case AssignmentExpression assignmentExpression:
+				return EvaluateAssignmentExpression(assignmentExpression,scope);
 		}
 		throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
 	}
@@ -76,7 +77,7 @@ public class GSharpEvaluator
 		throw new NotImplementedException();
 	}
 
-	private object EvaluateFiniteSequenceExpression(object rayExpression, Scope scope)
+	private object EvaluateRangeSequenceExpression(object rayExpression, Scope scope)
 	{
 		throw new NotImplementedException();
 	}
@@ -91,7 +92,7 @@ public class GSharpEvaluator
 		throw new NotImplementedException();
 	}
 
-	private object EvaluateCircleExpression(object circleExpression, Scope scope)
+	private object EvaluateCircleExpression(GSharpCircleExpression circleExpression, Scope scope)
 	{
 		throw new NotImplementedException();
 	}
@@ -151,22 +152,28 @@ public class GSharpEvaluator
 	}
 	private object EvaluateLetInExpression(Let_In_Expression letInExpression, Scope scope)
 	{
-		var inScope = EvaluateLetExpression(letInExpression.LetExpression, scope);
-		var inExpression = EvaluateExpression(letInExpression.InExpression, inScope);
+		var newScope = scope.BuildChildScope();
+
+		EvaluateLetExpression(letInExpression.LetExpressions, newScope);
+		var inExpression = EvaluateExpression(letInExpression.InExpression, newScope);
 		return inExpression;
 	}
-	private Scope EvaluateLetExpression(LetExpression letExpression, Scope scope)
-	{
-		var evaluateLetExpression = EvaluateExpression(letExpression.Expression, scope.BuildChildScope());
-		scope.AddVariable(letExpression.Identifier.Text, evaluateLetExpression);
-		if (letExpression.LetChildExpression is null)
-		{
-			return scope;
-		}
-		return EvaluateLetExpression(letExpression.LetChildExpression, scope.BuildChildScope());
-	}
 
-	private object EvaluateIfElseStatement(If_ElseStatement ifElseStatement, Scope scope)
+    private void EvaluateLetExpression(List<GSharpExpression> letExpressions, Scope scope)
+    {
+		foreach (var expression in letExpressions)
+		{
+			EvaluateExpression(expression,scope);
+		}
+    }
+
+	private object EvaluateAssignmentExpression(AssignmentExpression assignmentExpression, Scope scope)
+	{
+		var assignmentValue = EvaluateExpression(assignmentExpression.Expression, scope);
+		scope.AddVariable(assignmentExpression.Identifiers[0], assignmentValue);
+		return assignmentValue;
+	}
+    private object EvaluateIfElseStatement(If_ElseStatement ifElseStatement, Scope scope)
 	{
 		var condition = EvaluateExpression(ifElseStatement.IfCondition, scope.BuildChildScope());
 		bool boolCondition = false;

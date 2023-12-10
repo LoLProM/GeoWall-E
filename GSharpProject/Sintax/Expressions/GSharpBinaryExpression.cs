@@ -14,6 +14,8 @@ public class GSharpBinaryExpression : GSharpExpression
     public GSharpExpression Left { get; }
     public Token OperatorToken { get; }
     public GSharpExpression Right { get; }
+    public override TokenType TokenType => TokenType.BinaryExpression;
+
     public Type GetExpressionType()
     {
         if (OperatorToken.Type is TokenType.PlusToken)

@@ -10,4 +10,6 @@ public class GSharpColorExpression : GSharpExpression
         Color = color;
         ColorKeyWord = colorKeyWord;
     }
+    public override TokenType TokenType => TokenType.Color;
+
 }

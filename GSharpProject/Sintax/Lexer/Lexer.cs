@@ -1,10 +1,9 @@
-namespace GSharpProject;
-
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-class Lexer
+namespace GSharpProject.Parsing;
+public class Lexer
 {
     public List<Token> Tokens = new List<Token>();
     int position = 0;
@@ -12,7 +11,9 @@ class Lexer
     {
         textInput = Regex.Replace(textInput, @"\s+", " ");
 
-        Regex SyntaxTokens = new(@"\d+[^\D]|^-{0,1}\d+$|^-{0,1}\d+\.\d+E(\+|-)\d+$|^-{0,1}\d+\.\d+$|\+|\-|\*|\^|%|\(|\)|(=>)|(>=)|(<=)|<[=]{0}|>[=]{0}|!=|;|,|={1,2}|!|\&|\||(\u0022([^\u0022\\]|\\.)*\u0022)|@|[a-zA-Z]+\w*|/|[^\(\)\+\-\*/\^%<>=!&\|,;\s]+");
+        Regex SyntaxTokens = new(@"\d+|^-{0,1}\d+$|^-{0,1}\d+\.\d+E(\+|-)\d+$|^-{0,1}\d+\.\d+$|\+|\-|\*|\^|%|\(|\)|{|}|(=>)|(>=)|(<=)|<[=]{0}|>[=]{0}|!=|;|,|={1,2}|\.\.\.|!|\&|\||(\u0022([^\u0022\\]|\\.)*\u0022)|@|[a-zA-Z]+\w*|/|[^\(\)\+\-\*/\^%<>=!&\|,;\s]+");
+
+        // Regex SyntaxTokens = new (@"\d+$|\d+\.\d+$|\+|\-|\*|\^|%|\(|\)|{|}|(=>)|(>=)|(<=)|<[=]{0}|>[=]{0}|!=|;|,|={1,2}|\.\.\.|_");
 
         var matches = SyntaxTokens.Matches(textInput);
 
@@ -21,7 +22,7 @@ class Lexer
             var token = GetToken(match);
             Tokens.Add(token);
         }
-        Tokens.Add(new Token("", TokenType.END, Tokens.Count - 1, null));
+        Tokens.Add(new Token("", TokenType.END, Tokens.Count - 1, null!));
     }
     private Token GetToken(Match match)
     {

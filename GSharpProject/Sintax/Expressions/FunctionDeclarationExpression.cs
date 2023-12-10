@@ -13,5 +13,6 @@ public class FunctionDeclarationExpression : GSharpExpression
     public string FunctionName { get; }
     public List<string> Arguments { get; }
     public GSharpExpression FunctionBody { get; private set;}
-    
+
+    public override TokenType TokenType => Token.FunctionDeclaration;
 }

@@ -5,6 +5,7 @@ public class Token
     public int Position { get; }
     public object Value { get; }
     public TokenType Type { get; }
+    public static TokenType FunctionDeclaration { get; internal set; }
 
     public Token(string text, TokenType type, int position, object value)
     {

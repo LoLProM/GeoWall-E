@@ -6,7 +6,7 @@ namespace GSharpProject.Parsing;
 public class Scope
 {
     protected Scope parent;
-    private Dictionary<string, object> variables;
+    private readonly Dictionary<string, object> variables;
     public Scope()
     {
         variables = new Dictionary<string, object>();
@@ -44,5 +44,9 @@ public class Scope
             return variables[identifier];
         }
         return parent is null ? throw new Exception($"! SEMANTIC ERROR : Undefine variable {identifier}") : parent.GetValue(identifier);
+    }
+    public List<string> GetVariables()
+    {
+        return variables.Keys.ToList();
     }
 }

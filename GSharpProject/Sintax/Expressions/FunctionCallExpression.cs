@@ -11,4 +11,6 @@ public class FunctionCallExpression : GSharpExpression
     }
     public string FunctionName { get; }
     public List<GSharpExpression> Parameters { get; }
+
+    public override TokenType TokenType => TokenType.FunctionCall;
 }

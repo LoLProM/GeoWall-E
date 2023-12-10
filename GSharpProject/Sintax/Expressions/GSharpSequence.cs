@@ -17,6 +17,8 @@ public class GSharpLiteralSequence : GSharpSequence
     public Token OpenKey { get; }
     public GSharpExpression[] Elements { get; }
     public Token CloseKey { get; }
+
+    public override TokenType TokenType => TokenType.LiteralSequence;
 }
 
 public class GSharpRangeSequence : GSharpSequence
@@ -33,6 +35,8 @@ public class GSharpRangeSequence : GSharpSequence
     public GSharpLiteralExpression First { get; }
     public GSharpLiteralExpression Last { get; }
     public Token CloseKey { get; }
+    public override TokenType TokenType => TokenType.RangeSequence;
+
 }
 
 public class GSharpInfiniteSequence : GSharpSequence
@@ -46,6 +50,8 @@ public class GSharpInfiniteSequence : GSharpSequence
     public Token OpenKey { get; }
     public GSharpLiteralExpression First { get; }
     public Token CloseKey { get; }
+    public override TokenType TokenType => TokenType.InfiniteSequence;
+
 }
 
 

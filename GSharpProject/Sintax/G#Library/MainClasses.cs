@@ -181,18 +181,30 @@ public class Arc : IFigure
     public Point Center { get; }
     public Point StartRay { get; }
     public Point EndRay { get; }
-    public double Measure { get; }
+    public double Radius { get; }
     public Type Type => typeof(Arc);
 
-    public Arc(Point center, Point startRay, Point endRay, double measure)
+    public Arc(Point center, Point startRay, Point endRay, double radius)
     {
-        Measure = measure;
+        Radius = radius;
         EndRay = endRay;
         StartRay = startRay;
         Center = center;
+        StartAngle = GetAngle(startRay);
+        EndAngle = GetAngle(endRay);
     }
     public bool PointBelong(Point p1) => true;
 
+    public float GetAngle(Point p)
+    {
+        double diferentialY = p.Y - Center.Y;
+        double diferentialX = p.X - Center.X;
+        double cosDirector = diferentialX/Math.Sqrt(diferentialX*diferentialX + diferentialY*diferentialY);
+        if (cosDirector < 0) return (float)(Math.Acos(cosDirector) - Math.PI);
+        return (float)Math.Acos(cosDirector);
+    }
+    public float StartAngle {get;}
+    public float EndAngle {get;}
     public IEnumerable<Point> PointsOf()
     {
         throw new NotImplementedException();

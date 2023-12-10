@@ -21,4 +21,6 @@ public class GSharpRayExpression : GSharpPrimitive
     public Token Ray { get; }
     public List<string> Coordinates { get; }
     public string Identifier { get; }
+    public override TokenType TokenType => TokenType.Ray;
+
 }

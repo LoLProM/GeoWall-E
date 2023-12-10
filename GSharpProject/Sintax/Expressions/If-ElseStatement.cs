@@ -10,7 +10,7 @@ public class If_ElseStatement : GSharpExpression
         ElseClause = elseClause;
         ExpressionType = thenStatement.ExpressionType;
     }
-    public TokenType Type => TokenType.IfElseExpression;
+    public override TokenType TokenType => TokenType.IfElseExpression;
     public Token IfKeyword { get; }
     public GSharpExpression IfCondition { get; }
     public GSharpExpression ThenStatement { get; }

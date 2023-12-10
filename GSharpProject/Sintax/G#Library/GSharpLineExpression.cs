@@ -21,4 +21,6 @@ public class GSharpLineExpression : GSharpPrimitive
     public Token Line { get; }
     public List<string> Coordinates { get; }
     public string Identifier { get; }
+    public override TokenType TokenType => TokenType.Line;
+
 }
