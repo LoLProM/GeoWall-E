@@ -40,6 +40,10 @@ public class GSharpLineExpression : GSharpPrimitive
             }
             ExpressionType = new SingleType(typeof(Line));
         }
-        ExpressionType = new SingleType(typeof(Line));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Line)));
+            ExpressionType = new SingleType(typeof(Line));
+        }
     }
 }

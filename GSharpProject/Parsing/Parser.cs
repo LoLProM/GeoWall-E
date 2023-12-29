@@ -277,8 +277,8 @@ class Parser
 			TokenType.OpenParenthesisToken => ParseParenthesizedExpression(),
 			TokenType.NumberToken => ParseNumber(),
 			TokenType.DoubleNumber => ParseNumber(),
-			TokenType.Identifier => ParseIdentifiers(),
 			TokenType.Measure => ParseMeasure(),
+			TokenType.Identifier => ParseIdentifiers(),
 			TokenType.Color => ParseColor(),
 			TokenType.DrawKeyword => ParseDraw(),
 			TokenType.Import => ParseImport(),
@@ -315,18 +315,19 @@ class Parser
 		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
 		{
 			MatchToken(TokenType.OpenParenthesisToken);
-			while (CurrentToken.Type is not TokenType.CloseParenthesisToken)
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
 			{
-				var expression = ParseExpression();
-				listOfIdentifiers.Add(expression);
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
 				countOfParameters++;
-				if (countOfParameters > 2) throw new Exception("Measure Cannot have more than 2 points");
-				MatchToken(TokenType.ColonToken);
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
 			}
 		}
 
 		MatchToken(TokenType.CloseParenthesisToken);
-
 		return new MeasureExpression(listOfIdentifiers[0], listOfIdentifiers[1]);
 	}
 	private GSharpExpression ParsePoint()
@@ -578,12 +579,14 @@ class Parser
 		MatchToken(TokenType.DrawKeyword);
 		var expression = ParseExpression();
 		string message = "";
+		WallEColors.InitializeColor();
 		if (CurrentToken.Type == TokenType.StringToken)
 			message = CurrentToken.Text;
+
 		Color color = WallEColors.ColorDraw.Peek();
 		if (message == "")
 			return new DrawExpression(expression, color);
-		return new DrawExpression(expression, message, color);
+		else return new DrawExpression(expression, message, color);
 	}
 	private GSharpExpression ParseParenthesizedExpression()
 	{

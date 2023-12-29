@@ -14,6 +14,7 @@ public class GSharpEvaluator
 
     public GSharpEvaluator(GSharpStatementsCollection node)
     {
+        drawable = new();
         _Node = node;
     }
     public void Evaluate()
@@ -89,14 +90,20 @@ public class GSharpEvaluator
     {
         var pointA = EvaluateExpression(measureExpression.PointA, scope);
         var pointB = EvaluateExpression(measureExpression.PointB, scope);
-
         return new Measure((Point)pointA, (Point)pointB);
     }
 
     private object EvaluateDrawExpression(DrawExpression drawExpression, EvalScope scope)
     {
         var drawableFigure = EvaluateExpression(drawExpression.Argument,scope);
-		drawable.Add((drawableFigure,WallEColors.ColorDraw!.Peek(),drawExpression.Message));
+        if (drawExpression.Message is not null)
+        {
+		drawable.Add((drawableFigure,drawExpression.Color,drawExpression.Message));
+        }
+        else
+        {
+            drawable.Add((drawableFigure,drawExpression.Color,""));
+        }
 
         return new GSharpVoidEx();
     }
@@ -161,7 +168,6 @@ public class GSharpEvaluator
             var pointA = EvaluateExpression(rayExpression.Coordinates[0], scope);
             var pointB = EvaluateExpression(rayExpression.Coordinates[1], scope);
             var ray = new Ray((Point)pointA, (Point)pointB);
-            scope.AddVariable(rayExpression.Identifier, ray);
             return ray;
         }
         var evalRay = new Ray();
@@ -176,7 +182,6 @@ public class GSharpEvaluator
             var pointA = EvaluateExpression(segmentExpression.Coordinates[0], scope);
             var pointB = EvaluateExpression(segmentExpression.Coordinates[1], scope);
             var segment = new Segment((Point)pointA, (Point)pointB);
-            scope.AddVariable(segmentExpression.Identifier, segment);
             return segment;
         }
         var evalLine = new Segment();
@@ -190,9 +195,7 @@ public class GSharpEvaluator
         {
             var center = EvaluateExpression(circleExpression.Coordinates[0], scope);
             var radius = EvaluateExpression(circleExpression.Coordinates[1], scope);
-
-            var circle = new Circle((Point)center, new Measure((int)radius));
-            scope.AddVariable(circleExpression.Identifier, circle);
+            var circle = new Circle((Point)center, (Measure)radius);
             return circle;
         }
         var evalCircle = new Circle();
@@ -208,8 +211,7 @@ public class GSharpEvaluator
             var start = EvaluateExpression(arcExpression.Coordinates[1], scope);
             var end = EvaluateExpression(arcExpression.Coordinates[2], scope);
             var radius = EvaluateExpression(arcExpression.Coordinates[3], scope);
-            var arc = new Arc((Point)center, (Point)start, (Point)end, new Measure((int)radius));
-            scope.AddVariable(arcExpression.Identifier, arc);
+            var arc = new Arc((Point)center, (Point)start, (Point)end, (Measure)radius);
             return arc;
         }
         var evalArc = new Arc();
@@ -224,7 +226,6 @@ public class GSharpEvaluator
             var pointA = EvaluateExpression(lineExpression.Coordinates[0], scope);
             var pointB = EvaluateExpression(lineExpression.Coordinates[1], scope);
             var line = new Line((Point)pointA, (Point)pointB);
-            scope.AddVariable(lineExpression.Identifier, line);
             return line;
         }
         var evalLine = new Line();
@@ -238,7 +239,6 @@ public class GSharpEvaluator
             var firstValue = EvaluateExpression(pointExpression.Coordinates[0], scope);
             var secondValue = EvaluateExpression(pointExpression.Coordinates[1], scope);
             var point = new Point(Convert.ToDouble(firstValue), Convert.ToDouble(secondValue));
-            scope.AddVariable(pointExpression.Identifier, point);
             return point;
         }
         scope.AddVariable(pointExpression.Identifier, pointExpression.Value);

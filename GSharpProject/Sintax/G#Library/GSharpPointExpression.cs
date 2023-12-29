@@ -39,6 +39,10 @@ public class GSharpPointExpression : GSharpPrimitive
             }
             ExpressionType = new SingleType(typeof(Point));
         }
-        ExpressionType = new SingleType(typeof(Point));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Point)));
+            ExpressionType = new SingleType(typeof(Point));
+        }
     }
 }

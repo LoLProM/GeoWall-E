@@ -16,7 +16,7 @@ public class MeasureExpression : GSharpExpression
         PointA.CheckType(typedScope);
         PointB.CheckType(typedScope);
 
-        if (PointA.ExpressionType == PointB.ExpressionType && PointA.ExpressionType == SingleType.Of<int>())
+        if (PointA.ExpressionType == PointB.ExpressionType && PointA.ExpressionType == SingleType.Of<Point>())
         {
             ExpressionType = new SingleType(typeof(Measure));
         }

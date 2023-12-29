@@ -41,6 +41,10 @@ public class GSharpArcExpression : GSharpPrimitive
             }
             ExpressionType = new SingleType(typeof(Arc));
         }
-        ExpressionType = new SingleType(typeof(Arc));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Arc)));
+            ExpressionType = new SingleType(typeof(Arc));
+        }
     }
 }

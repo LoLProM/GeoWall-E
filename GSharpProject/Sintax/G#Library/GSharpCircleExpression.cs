@@ -30,16 +30,19 @@ public class GSharpCircleExpression : GSharpPrimitive
         {
             var center = Coordinates[0];
             var radius = Coordinates[1];
-
             center.CheckType(typedScope);
             radius.CheckType(typedScope);
 
-            if (center.ExpressionType != SingleType.Of<Point>() || radius.ExpressionType != SingleType.Of<Point>())
+            if (center.ExpressionType != SingleType.Of<Point>() || radius.ExpressionType != SingleType.Of<Measure>())
             {
                 throw new Exception("Circle Expressions parameters not have expected types");
             }
             ExpressionType = new SingleType(typeof(Circle));
         }
-        ExpressionType = new SingleType(typeof(Circle));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Circle)));
+            ExpressionType = new SingleType(typeof(Circle));
+        }
     }
 }

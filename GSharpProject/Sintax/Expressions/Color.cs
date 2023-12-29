@@ -21,6 +21,6 @@ public static class WallEColors
     public static void InitializeColor()
     {
         ColorDraw = new();
-        ColorDraw.Push(Color.DodgerBlue);
+        ColorDraw.Push(Color.Black);
     }
 }

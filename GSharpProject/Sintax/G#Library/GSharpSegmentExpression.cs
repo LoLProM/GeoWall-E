@@ -40,6 +40,10 @@ public class GSharpSegmentExpression : GSharpPrimitive
             }
             ExpressionType = new SingleType(typeof(Segment));
         }
-        ExpressionType = new SingleType(typeof(Segment));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Segment)));
+            ExpressionType = new SingleType(typeof(Segment));
+        }
     }
 }

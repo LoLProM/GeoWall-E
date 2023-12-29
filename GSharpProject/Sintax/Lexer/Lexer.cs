@@ -88,13 +88,17 @@ public class Lexer
         {
             return new Token(match.Value, TokenType.Ray, match.Index, match.Value);
         }
+        else if (IsMeasure(match))
+        {
+            return new Token(match.Value, TokenType.Measure, match.Index, match.Value);
+        }
         else if (IsSegmentObject(match))
         {
             return new Token(match.Value, TokenType.Segment, match.Index, match.Value);
         }
         else if (IsDraw(match))
         {
-            return new Token(match.Value, TokenType.Draw, match.Index, match.Value);
+            return new Token(match.Value, TokenType.DrawKeyword, match.Index, match.Value);
         }
         else if (IsImport(match))
         {
@@ -159,6 +163,16 @@ public class Lexer
                 return new Token("_", TokenType.Underscore, match.Index, null);
         }
         throw new Exception($"! LEXICAL ERROR : '{match.Value}' is not a valid token");
+    }
+
+    private bool IsMeasure(Match match)
+    {
+        if (match.Value == "measure")
+        {
+            position++;
+            return true;
+        }
+        return false;
     }
 
     private bool IsArcObject(Match match)
@@ -295,7 +309,7 @@ public class Lexer
     {
         foreach (var letter in match.Value)
         {
-            if (!char.IsLetter(letter))
+            if (!char.IsLetter(letter) && !char.IsDigit(letter))
             {
                 return false;
             }

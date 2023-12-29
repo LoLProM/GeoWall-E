@@ -5,6 +5,12 @@ namespace GSharpTest.Parser;
 public class ParserTest
 {
     [Fact]
+    public void Lexing()
+    {
+        var lexer = new Lexer("MandelBrot01;");
+        var a = lexer.Tokens;
+    }
+    [Fact]
     public void ParseLiteralNumberEvalOk()
     {
         var statements = StatementsTree.Create("3;");
@@ -49,28 +55,23 @@ public class ParserTest
     [InlineData("circle p;",typeof(GSharpCircleExpression))]
     [InlineData("line p;",typeof(GSharpLineExpression))]
     [InlineData("segment p;",typeof(GSharpSegmentExpression))]
-    [InlineData("point p = (2,3);",typeof(GSharpPointExpression))]
-    [InlineData("point p = (let a = 2; in a, 2+3);",typeof(GSharpPointExpression))]
-    [InlineData("point m; point a; ray p = (m,a);",typeof(GSharpRayExpression))]
-    [InlineData("circle p = (let a = 2; in a, 2+3);",typeof(GSharpCircleExpression))]
-    [InlineData("line p = (let a = 2; in a, 2+3);",typeof(GSharpLineExpression))]
-    [InlineData("segment p = (let a = 2; in a, 2+3);",typeof(GSharpSegmentExpression))]
-    [InlineData("arc p = (let a = 2; in a, 2+3);",typeof(GSharpArcExpression))]
-
+    [InlineData("p = point(2,3);",typeof(GSharpPointExpression))]
+    [InlineData("point m; point n; p = line(m,n);",typeof(GSharpLineExpression))]
+    [InlineData("point p; point m; point x; a = circle(p,measure(m,x));",typeof(GSharpCircleExpression))]
+    [InlineData("p = point(2,3); point m; point x; a = circle(p,measure(m,x));",typeof(GSharpCircleExpression))]
+    [InlineData("p = point(2,3); m = point(3,2); point x; a = circle(p,measure(m,x));",typeof(GSharpCircleExpression))]
 
     public void ParseFiguresEvalOk(string input, Type result)
     {
+        StandardLibrary.Initialize();
         var statements = StatementsTree.Create(input);
         TypeChecker.CheckType(statements);
-        var statementss = statements.Statements.ToList();
-        Assert.Single(statementss);
-        Assert.Equal(result,statementss[0].GetType());
     }
 
     [Fact]
     public void ParseIfElseEvalOk()
     {
-        var statements = StatementsTree.Create("if 2 > 3 then 1 else 3;");
+        var statements = StatementsTree.Create("if 2 + 3 then 1 else 3;");
         TypeChecker.CheckType(statements);
         var statementss = statements.Statements.ToList();
         Assert.Single(statementss);

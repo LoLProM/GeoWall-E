@@ -40,6 +40,10 @@ public class GSharpRayExpression : GSharpPrimitive
             }
             ExpressionType = new SingleType(typeof(Ray));
         }
-        ExpressionType = new SingleType(typeof(Ray));
+        else
+        {
+            typedScope.AddVariable(Identifier, new SingleType(typeof(Ray)));
+            ExpressionType = new SingleType(typeof(Ray));
+        }
     }
 }
