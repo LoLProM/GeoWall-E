@@ -16,25 +16,39 @@ public static class Utiles
         double y = (p1.Y + p2.Y) / 2;
         return new Point(x, y);
     }
-    public static List<Point> Interception(Object f1, Object f2)
+    public static List<Point> Interception(object f1, object f2)
     {
-        Type _f1 = f1.GetType();
-        Type _f2 = f2.GetType();
-
-        // switch (_f1)
-        // {
-        //     case typeof(Circle) when _f2 == typeof(Circle):
-        //         return InterceptionCircle((Circle)f1, (Circle)f2);
-        //     case typeof(Circle) when _f2 == typeof(Line):
-        //         return InterceptionLine_Circle((Circle)f1, (Line)f2);
-        //     case typeof(Line) when _f2 == typeof(Circle):
-        //         return InterceptionLine_Circle((Circle)f2, (Line)f1);
-        //     case typeof(Line) when _f2 == typeof(Line):
-        //         return InterceptionLine((Line)f2, (Line)f1);
-        //     default:
-        //         return new List<Point>();
-        // }
-
+        if (f1 is Circle && f2 is Circle)
+            return InterceptionCircle((Circle)f1,(Circle)f2);
+        if (f1 is Circle && f2 is Line)
+            return InterceptionLine_Circle((Circle)f1,(Line)f2);
+        if (f1 is Line && f2 is Line)
+            return InterceptionLine((Line)f1,(Line)f2);
+        if (f1 is Segment && f2 is Segment)
+            return InterceptionSegment((Segment)f1,(Segment)f2);
+        if (f1 is Segment && f2 is Circle)
+            return InterceptionSegment_Circle((Segment)f1,(Circle)f2);
+        if (f1 is Segment && f2 is Line)
+            return InterceptionSegment_Line((Segment)f1,(Line)f2);
+        if (f1 is Arc && f2 is Arc)
+            return InterceptionArc((Arc)f1,(Arc)f2);
+        if (f1 is Arc && f2 is Circle)
+            return InterceptionArc_Circle((Arc)f1,(Circle)f2);
+        if (f1 is Arc && f2 is Segment)
+            return InterceptionArc_Segment((Arc)f1,(Segment)f2);
+        if (f1 is Arc && f2 is Line)
+            return InterceptionArc_Line((Arc)f1,(Line)f2);
+        if (f1 is Ray && f2 is Ray)
+            return InterceptionRay((Ray)f1,(Ray)f2);
+        if (f1 is Ray && f2 is Line)
+            return InterceptionRay_Line((Ray)f1,(Line)f2);
+        if (f1 is Ray && f2 is Circle)
+            return InterceptionRay_Circle((Ray)f1,(Circle)f2);
+        if (f1 is Ray && f2 is Segment)
+            return InterceptionRay_Segment((Ray)f1,(Segment)f2);
+        if (f1 is Ray && f2 is Circle)
+            return InterceptionRay_Circle((Ray)f1,(Circle)f2);
+            
         return new List<Point>();
     }
 
@@ -344,8 +358,8 @@ public static class Utiles
             yield return a.NextDouble();
     }
 
-    // internal static int? GetCountSequence(SemanticSequence v)
-    // {
-    //     return v.Count;
-    // }
+    internal static int? GetCountSequence(Sequence v)
+    {
+        return v.Count;
+    }
 }

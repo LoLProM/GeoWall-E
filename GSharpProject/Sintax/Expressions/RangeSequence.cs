@@ -20,6 +20,8 @@ public class RangeSequence : Sequence
         }
     }
 
+    public override int Count => End - Start + 1;
+
     public int Start { get; }
     public int End { get; }
 

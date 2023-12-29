@@ -3,13 +3,23 @@ using System.Collections.Generic;
 using GSharpProject;
 using GSharpProject.Parsing;
 using System;
+using GSharpProject.Evaluator;
+using System.Linq;
 
 public partial class DrawingPanel : Panel
 {
+	public List<(object,Color,string)> figures;
+	public bool draw = false;
+	Font defaultFont = ThemeDB.FallbackFont;
+	int defaultFontSize = ThemeDB.FallbackFontSize;
+	bool vector_declared;
+	Vector2 traslation_vector;
+	bool found;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-
+		_Draw();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -19,34 +29,47 @@ public partial class DrawingPanel : Panel
 	}
 	public override void _Draw()
 	{
-		// Font defaultFont = ThemeDB.FallbackFont;
-		// int defaultFontSize = ThemeDB.FallbackFontSize;
-		// Point p1 = new Point(200, 300);
-		// Point p2 = new Point(200, 500);
-		// Point p3 = new Point(500, 300);
-		// Point p4 = new Point(500, 500);
-		// Point p5 = new Point(350, 100);
+		vector_declared = false;
+		Vector2 traslation_vector = new Vector2(0, 0);
+		string text;
+		found = false;
 
-		// DrawGSharpPoint(p1, Colors.Black);
-		// //DrawGSharpPoint(p2);
-		// DrawGSharpPoint(p3, Colors.Black);
-		// DrawGSharpRay(new Ray(p1, p3), Colors.Cyan);
-		// DrawGSharpRay(new Ray(p1, p2), Colors.Gold);
-		// DrawGSharpRay(new Ray(p1, p5), Colors.OrangeRed);
-		// Arc alfa = new Arc(p1, p2, p5, new Measure(100));
-		// Arc beta = new Arc(p1, p5, p2, new Measure(100));
-		// Arc gamma = new Arc(p1, p3, p2, new Measure(150));
-		// Arc delta = new Arc(p1, p2, p3, new Measure(150));
-
-		// DrawGSharpArc(beta, Colors.Olive);
-		// DrawGSharpArc(alfa, Colors.Aqua);
-		// DrawGSharpArc(gamma, Colors.GreenYellow);
-		// DrawGSharpArc(delta, Colors.DarkMagenta);
-		// DrawGSharpPoint(p1, Colors.Black);
-		// //DrawGSharpPoint(p2);
-		// DrawGSharpPoint(p3, Colors.Black);
+		foreach (var (figure,color,message) in figures)
+		{
+			if(figure is Arc arc)
+			{
+				DrawGSharpArc(arc,color,message);
+			}
+			else if (figure is LiteralSequence sequenceOf)
+			{
+				
+			}
+			else if(figure is Point point)
+			{
+				DrawGSharpPoint(point,color,message);
+			}
+			else if(figure is Circle circle)
+			{
+				DrawGSharpCircle(circle,color,message);
+				
+			}
+			else if(figure is Line line)
+			{
+				DrawGSharpLine(line,color,message);
+				
+			}
+			else if(figure is Ray ray)
+			{
+				DrawGSharpRay(ray,color,message);
+				
+			}
+			else if(figure is Segment segment)
+			{
+				DrawGSharpSegment(segment,color,message);
+			}
+		}
 	}
-	private void DrawGSharpLine(Line a, Godot.Color color, string msg = "")
+    private void DrawGSharpLine(Line a, Godot.Color color, string msg = "")
 	{
 		var startPoint = new Vector2((float)a.StartPoint.X, (float)a.StartPoint.Y);
 		var endPoint = new Vector2((float)a.EndPoint.X, (float)a.EndPoint.Y);
@@ -109,6 +132,13 @@ public partial class DrawingPanel : Panel
 		// Get the code edit node and access the code text.
 		var codeEdit = GetNode<TextEdit>("../CodeEdit");
 		var code = codeEdit.Text;
+		// StandardLibrary.Initialize();
+        // var statements = StatementsTree.Create(code);
+        // TypeChecker.CheckType(statements);
+        // var evaluator = new GSharpEvaluator(statements);
+        // var listOfDrawable = evaluator.Evaluate();
+		// figures = listOfDrawable;
+		// draw = true;
 	}
 }
 

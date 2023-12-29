@@ -371,13 +371,6 @@ class Parser
 		{
 			MatchToken(TokenType.SequenceToken);
 			var id = MatchToken(TokenType.Identifier).Text;
-			Random rand = new();
-			var count = rand.Next();
-			var lines = new Line[count];
-			for (int i = 0; i < count; i++)
-			{
-				lines[i] = new Line();
-			}
 			return new SequenceOf(id, TokenType.Line);
 		}
 

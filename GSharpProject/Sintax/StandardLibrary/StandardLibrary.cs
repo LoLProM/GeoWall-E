@@ -59,6 +59,8 @@ public static class StandardLibrary
             ["points"] = new FunctionDeclarationExpression("points", new(){"f"}, new FunctionReference((scope)=> Utiles.GetPointsOf(scope.GetValue("f")))),
 
             ["random"] = new FunctionDeclarationExpression("random", new(){}, new FunctionReference((scope)=> Utiles.GetRandom())),
+            
+            ["count"] = new FunctionDeclarationExpression("count", new(){"x"}, new FunctionReference((scope)=> Utiles.GetCountSequence((Sequence)scope.GetValue("x")))),
 
             ["restore"] = new FunctionDeclarationExpression("restore", new(){}, new FunctionReference((scope)=> WallEColors.ColorDraw.Pop) ),
         };

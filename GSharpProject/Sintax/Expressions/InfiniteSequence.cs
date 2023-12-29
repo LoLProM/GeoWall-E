@@ -8,6 +8,7 @@ public class InfiniteSequence : Sequence
         Start = start;
     }
 
+    public override int Count => throw new Exception("");
     public override IEnumerable<object> Elements => GetInfiniteSequence();
 
     private IEnumerable<object> GetInfiniteSequence()

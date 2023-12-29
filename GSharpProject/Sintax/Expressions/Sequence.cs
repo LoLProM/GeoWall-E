@@ -5,7 +5,10 @@ namespace GSharpProject;
 public abstract class Sequence : IEnumerable<object>
 {
     public abstract IEnumerable<object> Elements {get;}
+
     public abstract Sequence RemainingSequence(int index);
+
+    public abstract int Count{get;}
     public bool IsEmpty()
     {
         return !Elements.Any();

@@ -4,6 +4,8 @@ public class LiteralSequence : Sequence
     private List<object> sequenceElements = new();
     public override IEnumerable<object> Elements => sequenceElements;
 
+    public override int Count => sequenceElements.Count;
+
     public void AddElement(object element)
     {
         sequenceElements.Add(element);

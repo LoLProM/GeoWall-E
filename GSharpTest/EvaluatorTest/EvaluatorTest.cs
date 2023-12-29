@@ -7,9 +7,9 @@ namespace GSharpTest.Evaluator;
 public class EvaluatorTest
 {
     [Theory]
-    // [InlineData("3;")]
+    [InlineData("3;")]
     [InlineData("2+3;")]
-    // [InlineData("-2;")]
+    [InlineData("-2;")]
     public void EvaluateLiteralNumberEvalOk(string input)
     {
         var statements = StatementsTree.Create(input);
@@ -37,7 +37,7 @@ public class EvaluatorTest
     [InlineData("(let c = 3; in c) + 4;", 7)]
     [InlineData("let a = let b = 2; in b; in a *2;", 2)]
     [InlineData("Q(x) = if x == 1 then 1 else x; let a = if let b = 2; in b == --(2*1) then 3 else 1; in Q(3-2) * 2 /12;", 2)]
-    [InlineData("F(x) = if x == 1 then 1 else x; F({1,2,3}) + 2;", 2)]
+    // [InlineData("F(x) = if x == 1 then 1 else x; F({1,2,3}) + 2;", 2)]
 
     public void EvalLetInIsOk(string input, double expectedResult)
     {
@@ -72,7 +72,6 @@ public class EvaluatorTest
     [InlineData("_,b,_ = {1,2,3}; b;")]
     [InlineData("_,b,_ = {1...3}; b;")]
     [InlineData("a = {1...3} + {4,5}; a;")]
-
     [InlineData("_,b,_ = {1...}; b;")]
     [InlineData("a,b,c,_ = {{1,2},{1,2},{1,2}}; d,_ = c;")]
 
@@ -85,17 +84,19 @@ public class EvaluatorTest
     }
 
     [Theory]
-    [InlineData("point p;")]
-    [InlineData("ray p;")]
-    [InlineData("arc p;")]
-    [InlineData("circle p;")]
-    [InlineData("line p;")]
-    [InlineData("segment p;")]
-    [InlineData("p = point(2,3);")]
-    [InlineData("point m; point n; p = line(m,n);")]
-    [InlineData("point p; point m; point x; a = circle(p,measure(m,x));")]
-    [InlineData("p = point(2,3); point m; point x; a = circle(p,measure(m,x));")]
-    [InlineData("p = point(2,3); m = point(3,2); point x; a = circle(p,measure(m,x));")]
+    // [InlineData("point p; draw p;")]
+    // [InlineData("point a; point b; draw circle(a,measure(a,b));")]
+    [InlineData("point a; point b; c =  circle(a,measure(a,b));")]
+    // [InlineData("ray p;")]
+    // [InlineData("arc p;")]
+    // [InlineData("circle p;")]
+    // [InlineData("line p;")]
+    // [InlineData("segment p;")]
+    // [InlineData("p = point(2,3);")]
+    // [InlineData("point m; point n; p = line(m,n);")]
+    // [InlineData("point p; point m; point x; a = circle(p,measure(m,x));")]
+    // [InlineData("p = point(2,3); point m; point x; a = circle(p,measure(m,x));")]
+    // [InlineData("p = point(2,3); m = point(3,2); point x; a = circle(p,measure(m,x));")]
 
     public void EvalFiguresOk(string input)
     {

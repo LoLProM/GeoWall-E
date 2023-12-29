@@ -17,7 +17,7 @@ public class GSharpEvaluator
         drawable = new();
         _Node = node;
     }
-    public void Evaluate()
+    public List<(object, Color, string)> Evaluate()
     {
         EvalScope scope = StandardLibrary.Variables;
         foreach (var statement in _Node.Statements)
@@ -25,6 +25,7 @@ public class GSharpEvaluator
             if (statement is FunctionDeclarationExpression) continue;
             EvaluateExpression(statement, scope);
         }
+        return drawable;
     }
     private object EvaluateExpression(GSharpExpression node, EvalScope scope)
     {
