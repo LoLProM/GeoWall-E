@@ -1,4 +1,5 @@
 using System;
+using GSharpProject.Parsing;
 
 namespace GSharpProject;
 
@@ -15,8 +16,21 @@ public class GSharpBinaryExpression : GSharpExpression
     public Token OperatorToken { get; }
     public GSharpExpression Right { get; }
     public override TokenType TokenType => TokenType.BinaryExpression;
+    public override void CheckType(TypedScope typedScope)
+    {
+        Left.CheckType(typedScope);
+        Right.CheckType(typedScope);
 
-    public Type GetExpressionType()
+        if (Left.ExpressionType == SingleType.Of<Undefined>() || Right.ExpressionType == SingleType.Of<Undefined>() && !(Left.ExpressionType == SingleType.Of<Sequence>() && Right.ExpressionType == SingleType.Of<Undefined>()))
+        {
+            ExpressionType = SingleType.Of<Undefined>();
+        }
+        else
+        {
+            ExpressionType = TypeCheckerHelper.GetBinaryOperatorType(Left, OperatorToken, Right);
+        }
+    }
+    public ExpressionType GetExpressionType()
     {
         if (OperatorToken.Type is TokenType.PlusToken)
         {
@@ -24,13 +38,25 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == typeof(double) && Right.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -40,13 +66,25 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -56,13 +94,25 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -72,13 +122,25 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -89,13 +151,25 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == typeof(bool) && Right.ExpressionType == typeof(bool))
+            else if (Left!.ExpressionType == SingleType.Of<bool>() && Right.ExpressionType == SingleType.Of<bool>())
             {
-                return typeof(bool);
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
         else if (OperatorToken.Type is TokenType.SingleOrToken)
@@ -104,13 +178,21 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(bool))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<bool>())
             {
-                return typeof(bool);
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
         else if (OperatorToken.Type is TokenType.ModuleToken)
@@ -120,13 +202,25 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null!;
             }
 
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
         else if (OperatorToken.Type is TokenType.BiggerToken || OperatorToken.Type is TokenType.BiggerOrEqualToken)
@@ -136,11 +230,25 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null!;
             }
 
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
-                return typeof(bool);
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -151,11 +259,25 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null!;
             }
 
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
-                return typeof(bool);
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
             else
             {
-                return null;
+                return null!;
             }
         }
 
@@ -165,14 +287,26 @@ public class GSharpBinaryExpression : GSharpExpression
             {
                 return null!;
             }
-
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
-                return typeof(bool);
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
+            }
             else
             {
-                return null;
+                return null!;
             }
-
         }
         else if (OperatorToken.Type is TokenType.NotEqualToken)
         {
@@ -181,13 +315,25 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null!;
             }
 
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(bool);
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<bool>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<bool>();
             }
             else
             {
-                return null;
+                return null!;
             }
 
         }
@@ -198,28 +344,44 @@ public class GSharpBinaryExpression : GSharpExpression
                 return null!;
             }
 
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            else if (Left!.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<int>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<double>() && Right.ExpressionType == SingleType.Of<int>())
+            {
+                return SingleType.Of<double>();
+            }
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<double>())
+            {
+                return SingleType.Of<double>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
         else if (OperatorToken.Type is TokenType.SingleEqualToken)
         {
-            if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(double))
+            if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<double>())
             {
-                return typeof(double);
+                return SingleType.Of<double>();
             }
-            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == typeof(bool))
+            else if (Left!.ExpressionType == SingleType.Of<int>() && Right.ExpressionType == SingleType.Of<int>())
             {
-                return typeof(bool);
+                return SingleType.Of<int>();
+            }
+            else if (Left.ExpressionType == Right.ExpressionType && Left.ExpressionType == SingleType.Of<bool>())
+            {
+                return SingleType.Of<bool>();
             }
             else
             {
-                return null;
+                return null!;
             }
         }
         throw new Exception($"!SEMANTIC ERROR : Invalid expression: Can't operate {Left.ExpressionType} with {Right.ExpressionType} using {OperatorToken.Text}");

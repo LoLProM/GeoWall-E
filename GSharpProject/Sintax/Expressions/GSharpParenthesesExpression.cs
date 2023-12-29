@@ -1,3 +1,5 @@
+using GSharpProject.Parsing;
+
 namespace GSharpProject;
 
 public class GSharpParenthesesExpression : GSharpExpression
@@ -13,6 +15,12 @@ public class GSharpParenthesesExpression : GSharpExpression
     public Token OpenParenthesisToken { get; }
     public GSharpExpression InsideExpression { get; }
     public Token CloseParenthesisToken { get; }
+
+    public override void CheckType(TypedScope typedScope)
+    {
+        InsideExpression.CheckType(typedScope);
+        ExpressionType = InsideExpression.ExpressionType;
+    }
 }
 
 

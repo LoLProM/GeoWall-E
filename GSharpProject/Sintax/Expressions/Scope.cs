@@ -3,23 +3,16 @@ using System.Collections.Generic;
 
 namespace GSharpProject.Parsing;
 
-public class Scope
+public abstract class Scope<T>
 {
-    protected Scope parent;
-    private readonly Dictionary<string, object> variables;
+    protected Scope<T>? parent;
+    private readonly Dictionary<string, T> variables;
     public Scope()
     {
-        variables = new Dictionary<string, object>();
+        variables = new Dictionary<string, T>();
     }
 
-    public Scope(List<string> parameters) : this()
-    {
-        foreach (var parameter in parameters)
-        {
-            variables.Add(parameter, null);
-        }
-    }
-    public void AddVariable(string identifier, object expression)
+    public void AddVariable(string identifier, T expression)
     {
         variables[identifier] = expression;
     }
@@ -29,15 +22,14 @@ public class Scope
         {
             return true;
         }
-        return parent is null ? false : parent.Contains(identifier);
+        return parent is not null && parent.Contains(identifier);
     }
-    public Scope BuildChildScope()
+    public void AddChildScope(Scope<T> childScope)
     {
-        var newScope = new Scope();
-        newScope.parent = this;
-        return newScope;
+        childScope.parent = this;
     }
-    public object GetValue(string identifier)
+
+    public T GetValue(string identifier)
     {
         if(variables.ContainsKey(identifier))
         {
@@ -45,8 +37,17 @@ public class Scope
         }
         return parent is null ? throw new Exception($"! SEMANTIC ERROR : Undefine variable {identifier}") : parent.GetValue(identifier);
     }
+
     public List<string> GetVariables()
     {
         return variables.Keys.ToList();
     }
+}
+
+public class TypedScope : Scope<ExpressionType>
+{
+}
+
+public class EvalScope : Scope<object> 
+{ 
 }

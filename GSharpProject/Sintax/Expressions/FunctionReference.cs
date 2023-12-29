@@ -3,16 +3,20 @@ using GSharpProject.Parsing;
 
 namespace GSharpProject
 {
-    public class FunctionReference : GSharpExpression
+    internal class FunctionReference : GSharpExpression
     {
-        private Func<Scope, object> function;
-
-        public FunctionReference (Func<Scope, object> function)
+        private readonly Func<EvalScope, object> function;
+        public FunctionReference(Func<EvalScope, object> function)
         {
             this.function = function;
         }
         public override TokenType TokenType => TokenType.FunctionReference;
-        public object Eval(Scope param)
+
+        public override void CheckType(TypedScope typedScope)
+        {
+        }
+
+        public object Eval(EvalScope param)
         {
             return function(param);
         }

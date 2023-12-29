@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GSharpProject.Parsing;
 
 namespace GSharpProject;
 
@@ -13,6 +14,15 @@ public class FunctionDeclarationExpression : GSharpExpression
     public string FunctionName { get; }
     public List<string> Arguments { get; }
     public GSharpExpression FunctionBody { get; private set;}
-
-    public override TokenType TokenType => Token.FunctionDeclaration;
+    public override TokenType TokenType => TokenType.FunctionDeclaration;
+    public override void CheckType(TypedScope typedScope)
+    {
+        var recursiveChecker = new RecursionChecker();
+        if (!recursiveChecker.CheckRecursiveFunctions(this))
+        {
+            FunctionBody.CheckType(typedScope);
+            ExpressionType = FunctionBody.ExpressionType;
+        }
+        ExpressionType = new SingleType(typeof(Undefined));
+    }
 }

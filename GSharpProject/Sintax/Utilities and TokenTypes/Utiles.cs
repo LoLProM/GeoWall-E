@@ -14,7 +14,7 @@ public static class Utiles
     {
         double x = (p1.X + p2.X) / 2;
         double y = (p1.Y + p2.Y) / 2;
-        return new Point(x, y, "Mid");
+        return new Point(x, y);
     }
     public static List<Point> Interception(Object f1, Object f2)
     {
@@ -47,7 +47,7 @@ public static class Utiles
         else if (centerDistance == 0)
             return intercept;
         else if (c1.Radius == c2.Radius && c1.Center.PointBelong(c2.Center))
-            return null;
+            return null!;
         Point middle = MiddlePoint(c1.Center, c2.Center);
 
         double a = (Math.Pow(c1.Radius, 2) - Math.Pow(c2.Radius, 2) + Math.Pow(centerDistance, 2)) / (2 * centerDistance);
@@ -58,8 +58,8 @@ public static class Utiles
         double x_intercept2 = middle.X - h * (c2.Center.Y - c1.Center.Y) / centerDistance;
         double y_intercept2 = middle.Y + h * (c2.Center.X - c1.Center.X) / centerDistance;
 
-        Point inter_1 = new Point(x_intercept1, y_intercept1, "a1");
-        Point inter_2 = new Point(x_intercept2, y_intercept2, "a2");
+        Point inter_1 = new Point(x_intercept1, y_intercept1);
+        Point inter_2 = new Point(x_intercept2, y_intercept2);
 
         intercept.Add(inter_1);
         if (inter_1.X != inter_2.X || inter_1.Y != inter_2.Y)
@@ -87,9 +87,9 @@ public static class Utiles
 
             double interceptY1 = m * interceptX1 + n;
             double interceptY2 = m * interceptX2 + n;
-            Point p1 = new Point(interceptX1, interceptY1, "A");
+            Point p1 = new Point(interceptX1, interceptY1);
             intercept.Add(p1);
-            if (!p1.PointBelong(new Point(interceptX2, interceptY2, "A"))) intercept.Add(new Point(interceptX2, interceptY2, "A"));
+            if (!p1.PointBelong(new Point(interceptX2, interceptY2))) intercept.Add(new Point(interceptX2, interceptY2));
             return intercept;
         }
         else
@@ -98,8 +98,8 @@ public static class Utiles
             if (r * r - (x - a) * (x - a) < 0) return intercept;
             double y1 = b - Math.Sqrt(r * r - (x - a) * (x - a));
             double y2 = b + Math.Sqrt(r * r - (x - a) * (x - a));
-            intercept.Add(new Point(x, y1, "A"));
-            if (y1 != y2) intercept.Add(new Point(x, y2, "S"));
+            intercept.Add(new Point(x, y1));
+            if (y1 != y2) intercept.Add(new Point(x, y2));
         }
         return intercept;
     }
@@ -127,7 +127,7 @@ public static class Utiles
         double lambda = ((c - a) * D + (b - d) * C) / (D * A - B * C);
         double xintercept = a + lambda * A;
         double yintercept = b + lambda * B;
-        return new List<Point>() { new Point(xintercept, yintercept, "A") };
+        return new List<Point>() { new Point(xintercept, yintercept) };
     }
     public static List<Point> InterceptionSegment(Segment s1, Segment s2)
     {
@@ -184,8 +184,8 @@ public static class Utiles
     public static List<Point> InterceptionArc(Arc a1, Arc a2)
     {
         var pointList = new List<Point>();
-        Circle c1 = new Circle(a1.Center, a1.Radius);
-        Circle c2 = new Circle(a2.Center, a2.Radius);
+        Circle c1 = new Circle(a1.Center, new Measure(a1.Radius));
+        Circle c2 = new Circle(a2.Center, new Measure(a1.Radius));
 
         var posibleInterception = InterceptionCircle(c1, c2);
 
@@ -203,7 +203,7 @@ public static class Utiles
     public static List<Point> InterceptionArc_Circle(Arc a1, Circle c2)
     {
         var pointList = new List<Point>();
-        Circle c1 = new Circle(a1.Center, a1.Radius);
+        Circle c1 = new Circle(a1.Center, new Measure(a1.Radius));
 
         var posibleInterception = InterceptionCircle(c1, c2);
 
@@ -221,7 +221,7 @@ public static class Utiles
     public static List<Point> InterceptionArc_Segment(Arc a1, Segment s2)
     {
         var pointList = new List<Point>();
-        Circle c1 = new Circle(a1.Center, a1.Radius);
+        Circle c1 = new Circle(a1.Center, new Measure(a1.Radius));
         Line l1 = new Line(s2.StartPoint, s2.EndPoint);
 
         var posibleInterception = InterceptionLine_Circle(c1, l1);
@@ -240,7 +240,7 @@ public static class Utiles
     public static List<Point> InterceptionArc_Line(Arc a1, Line l2)
     {
         var pointList = new List<Point>();
-        Circle c1 = new Circle(a1.Center, a1.Radius);
+        Circle c1 = new Circle(a1.Center, new Measure(a1.Radius));
 
         var posibleInterception = InterceptionLine_Circle(c1, l2);
 
@@ -325,4 +325,27 @@ public static class Utiles
         }
         return pointList;
     }
+
+    internal static IEnumerator<Point> GetSamples()
+    {
+        while (true)
+            yield return new Point();
+    }
+
+    internal static IEnumerable<Point> GetPointsOf(object v)
+    {
+        return ((IFigure)v).PointsOf();
+    }
+
+    internal static IEnumerator<double> GetRandom()
+    {
+        Random a = new();
+        while (true)
+            yield return a.NextDouble();
+    }
+
+    // internal static int? GetCountSequence(SemanticSequence v)
+    // {
+    //     return v.Count;
+    // }
 }

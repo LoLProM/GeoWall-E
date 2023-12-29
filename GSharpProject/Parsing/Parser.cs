@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,25 +9,23 @@ namespace GSharpProject.Parsing;
 class Parser
 {
 	private int position = 0;
-	private List<Token> tokens;
+	private readonly List<Token> Tokens;
 	public Parser(string text)
 	{
 		var lexer = new Lexer(text);
-		tokens = lexer.Tokens;
+		Tokens = lexer.Tokens;
 	}
 	private Token CurrentToken => LookAhead(0);
 	private Token NextToken => LookAhead(1);
 
-	public HashSet<string> TemporalFunctions = new();
-
 	private Token LookAhead(int offset)
 	{
 		var index = position + offset;
-		if (index >= tokens.Count)
+		if (index >= Tokens.Count)
 		{
-			return tokens[index - 1];
+			return Tokens[index - 1];
 		}
-		return tokens[index];
+		return Tokens[index];
 	}
 	private Token TokenAhead()
 	{
@@ -59,7 +58,6 @@ class Parser
 		return new GSharpStatementsCollection(statements);
 	}
 
-	//TODO
 	private GSharpExpression ParseAssignmentExpression()
 	{
 		List<string> identifiers = ParseMatchIdentifiers();
@@ -68,7 +66,6 @@ class Parser
 		return new AssignmentExpression(identifiers, expression);
 	}
 
-	//TODO
 	private GSharpSequence ParseSequence()
 	{
 		var openKey = MatchToken(TokenType.OpenBraceToken);
@@ -85,11 +82,12 @@ class Parser
 			var closeKey = MatchToken(TokenType.CloseBraceToken);
 			return new GSharpInfiniteSequence(openKey, firstValue as GSharpLiteralExpression, closeKey);
 		}
+
 		if (IsARangeSequence())
 		{
 			var valueAfterThreePoints = ParseExpression();
 			var closeKey = MatchToken(TokenType.CloseBraceToken);
-			return new GSharpRangeSequence(openKey, firstValue as GSharpLiteralExpression, valueAfterThreePoints as GSharpLiteralExpression, closeKey);
+			return new GSharpRangeSequence(openKey, (GSharpLiteralExpression)firstValue, (GSharpLiteralExpression)valueAfterThreePoints, closeKey);
 		}
 
 		var expressions = new List<GSharpExpression>()
@@ -102,12 +100,10 @@ class Parser
 			MatchToken(TokenType.ColonToken);
 			expressions.Add(ParseExpression());
 		}
+
 		var close = MatchToken(TokenType.CloseBraceToken);
 		return new GSharpLiteralSequence(openKey, expressions.ToArray(), close);
 	}
-
-	//TODO
-
 	private bool IsARangeSequence()
 	{
 		var flag = CurrentToken.Type is TokenType.ThreePointsToken && LookAhead(1).Type is not TokenType.CloseBraceToken;
@@ -118,8 +114,6 @@ class Parser
 		}
 		return false;
 	}
-
-	//TODO
 	private bool IsAnInfiniteSequence()
 	{
 		var flag = CurrentToken.Type is TokenType.ThreePointsToken && LookAhead(1).Type is TokenType.CloseBraceToken;
@@ -129,43 +123,12 @@ class Parser
 		}
 		return false;
 	}
-
-	// //TODO
-	// public GSharpExpression ParseAssigment(List<GSharpLiteralExpression> identifiers)
-	// {
-	// 	if (CurrentToken.Type == TokenType.Identifier && LookAhead(1).Type == TokenType.SingleEqualToken)
-	// 	{
-	// 		var identifier = MatchToken(TokenType.Identifier);
-	// 		var equalToken = MatchToken(TokenType.SingleEqualToken);
-	// 		var assignment = ParseExpression();
-	// 		return new AssignmentExpression(identifier.Text, equalToken, assignment);
-	// 	}
-	// 	return ParseExpression();
-	// }
-
-	// private FunctionDeclarationExpression ParseFunctionDeclaration()
-	// {
-	// 	var functionName = MatchToken(TokenType.Identifier);
-	// 	TemporalFunctions.Add(functionName.Text);
-	// 	var functionParameters = ParseParameters();
-	// 	MatchToken(TokenType.SingleEqualToken);
-	// 	var functionBody = ParseExpression();
-	// 	var functionDeclaration = new FunctionDeclarationExpression(functionName.Text, functionParameters, functionBody);
-
-	// 	if (!StandardLibrary.Functions.ContainsKey(functionName.Text))
-	// 	{
-	// 		StandardLibrary.Functions.Add(functionName.Text, functionDeclaration);
-	// 	}
-	// 	else
-	// 	{
-	// 		throw new Exception($"! FUNCTION ERROR : Function {functionName.Text} is already defined");
-	// 	}
-	// 	return functionDeclaration;
-	// }
 	private List<string> ParseMatchIdentifiers()
 	{
-		var identifiers = new List<string>();
-		identifiers.Add(CurrentToken.Text);
+		var identifiers = new List<string>
+		{
+			CurrentToken.Text
+		};
 		TokenAhead();
 		while (CurrentToken.Type is TokenType.ColonToken)
 		{
@@ -175,30 +138,6 @@ class Parser
 		}
 		return identifiers;
 	}
-
-	// private GSharpExpression ParseFunctionCall(string identifier)
-	// {
-	// 	TokenAhead();
-	// 	var coordinates = new List<GSharpExpression>();
-
-	// 	MatchToken(TokenType.OpenParenthesisToken);
-	// 	while (true)
-	// 	{
-	// 		if (CurrentToken.Type == TokenType.CloseParenthesisToken)
-	// 		{
-	// 			break;
-	// 		}
-	// 		var expression = ParseExpression();
-	// 		coordinates.Add(expression);
-	// 		if (CurrentToken.Type == TokenType.ColonToken)
-	// 		{
-	// 			TokenAhead();
-	// 		}
-	// 	}
-	// 	MatchToken(TokenType.CloseParenthesisToken);
-
-	// 	return new FunctionCallExpression(identifier, coordinates);
-	// }
 	private GSharpExpression ParseIdentifiers()
 	{
 		var identifier = ParseIdentifier(CurrentToken);
@@ -248,7 +187,6 @@ class Parser
 		}
 		return functionDeclaration;
 	}
-
 	private GSharpLiteralExpression ParseIdentifier(Token identifier)
 	{
 		TokenAhead();
@@ -268,7 +206,6 @@ class Parser
 		var inExpression = ParseExpression();
 		return new Let_In_Expression(listOfExpressions, inExpression);
 	}
-
 	private GSharpExpression ParseIfElseExpression()
 	{
 		var ifKeyword = MatchToken(TokenType.IfKeyword);
@@ -313,172 +250,340 @@ class Parser
 		}
 		return left;
 	}
-
 	private bool IsMatchExpression()
 	{
-		if (CurrentToken.Type is TokenType.Identifier)
+		if (CurrentToken.Type is TokenType.Identifier || CurrentToken.Type is TokenType.Underscore)
 		{
 			int cont = 0;
 			while (true)
 			{
-				if (LookAhead(cont + 1).Type is TokenType.ColonToken && LookAhead(cont + 2).Type is TokenType.Identifier)
+				if (LookAhead(cont + 1).Type is TokenType.ColonToken && LookAhead(cont + 2).Type is TokenType.Identifier || LookAhead(cont + 2).Type is TokenType.Underscore)
 				{
 					cont += 2;
 					continue;
 				}
-
 				return LookAhead(cont + 1).Type is TokenType.SingleEqualToken;
 			}
 		}
 		return false;
 	}
-
 	private GSharpExpression ParsePrimary()
 	{
-		switch (CurrentToken.Type)
+		return CurrentToken.Type switch
 		{
-			case TokenType.LetToken:
-				return ParseLetInExpression();
-			case TokenType.IfKeyword:
-				return ParseIfElseExpression();
-			case TokenType.StringToken:
-				return ParseString();
-			case TokenType.OpenParenthesisToken:
-				return ParseParenthesizedExpression();
-			case TokenType.NumberToken:
-				return ParseNumber();
-			case TokenType.Identifier:
-				return ParseIdentifiers();
-			case TokenType.Point:
-				return ParsePoint();
-			case TokenType.Line:
-				return ParseLine();
-			case TokenType.Arc:
-				return ParseArc();
-			case TokenType.Segment:
-				return ParseSegment();
-			case TokenType.Circle:
-				return ParseCircle();
-			case TokenType.Ray:
-				return ParseRay();
-			case TokenType.OpenBraceToken:
-				return ParseSequence();
-			default:
-				throw new Exception("! SYNTAX ERROR : Invalid Expression");
-		}
+			TokenType.LetToken => ParseLetInExpression(),
+			TokenType.IfKeyword => ParseIfElseExpression(),
+			TokenType.StringToken => ParseString(),
+			TokenType.OpenParenthesisToken => ParseParenthesizedExpression(),
+			TokenType.NumberToken => ParseNumber(),
+			TokenType.DoubleNumber => ParseNumber(),
+			TokenType.Identifier => ParseIdentifiers(),
+			TokenType.Measure => ParseMeasure(),
+			TokenType.Color => ParseColor(),
+			TokenType.DrawKeyword => ParseDraw(),
+			TokenType.Import => ParseImport(),
+			TokenType.Point => ParsePoint(),
+			TokenType.Line => ParseLine(),
+			TokenType.Arc => ParseArc(),
+			TokenType.Segment => ParseSegment(),
+			TokenType.Circle => ParseCircle(),
+			TokenType.Ray => ParseRay(),
+			TokenType.OpenBraceToken => ParseSequence(),
+			TokenType.Undefine => ParseUndefine(),
+
+			_ => throw new Exception("! SYNTAX ERROR : Invalid Expression"),
+		};
 	}
 
+	private GSharpExpression ParseUndefine()
+	{
+		var undefine = CurrentToken;
+		MatchToken(TokenType.Undefine);
+		return new GSharpLiteralExpression(undefine);
+	}
+
+	private DrawExpression ParseImport()
+	{
+		throw new NotImplementedException();
+	}
+	private GSharpExpression ParseMeasure()
+	{
+		MatchToken(TokenType.Measure);
+		int countOfParameters = 0;
+		var listOfIdentifiers = new List<GSharpExpression>();
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+			MatchToken(TokenType.OpenParenthesisToken);
+			while (CurrentToken.Type is not TokenType.CloseParenthesisToken)
+			{
+				var expression = ParseExpression();
+				listOfIdentifiers.Add(expression);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Measure Cannot have more than 2 points");
+				MatchToken(TokenType.ColonToken);
+			}
+		}
+
+		MatchToken(TokenType.CloseParenthesisToken);
+
+		return new MeasureExpression(listOfIdentifiers[0], listOfIdentifiers[1]);
+	}
 	private GSharpExpression ParsePoint()
 	{
 		var pointKeyword = MatchToken(TokenType.Point);
-		var pointId = MatchToken(TokenType.Identifier);
 
-		if (LookAhead(0).Type is TokenType.SingleEqualToken)
+		if (CurrentToken.Type is TokenType.SequenceToken)
 		{
-			var equalToken = MatchToken(TokenType.SingleEqualToken);
-			var coordinates = ParseCoordinates();
-			return new GSharpPointExpression(pointKeyword, pointId.Text, coordinates);
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			return new SequenceOf(id, TokenType.Point);
 		}
-		return new GSharpPointExpression(pointKeyword, pointId.Text);
-	}
-	private List<string> ParseCoordinates()
-	{
-		MatchToken(TokenType.OpenParenthesisToken);
-		var coordinates = new List<string>();
-		if (CurrentToken.Type is TokenType.CloseParenthesisToken)
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
 		{
-			TokenAhead();
-			return coordinates;
-		}
-		coordinates.Add(CurrentToken.Text);
-		TokenAhead();
-		while (CurrentToken.Type == TokenType.ColonToken)
-		{
-			TokenAhead();
-			if (CurrentToken.Type is not TokenType.NumberToken)
+			var countOfParameters = 0;
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
 			{
-				throw new Exception($"! SEMANTIC ERROR : Coordinates must be a number");
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
 			}
-			coordinates.Add(CurrentToken.Text);
-			TokenAhead();
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpPointExpression(pointKeyword, listOfIdentifiers);
 		}
-		TokenAhead();
-		return coordinates;
+
+		var pointId = MatchToken(TokenType.Identifier);
+		return new GSharpPointExpression(pointKeyword, pointId.Text, new Point());
 	}
 	private GSharpExpression ParseLine()
 	{
 		var lineKeyword = MatchToken(TokenType.Line);
-		var lineId = MatchToken(TokenType.Identifier);
 
-		if (LookAhead(0).Type is TokenType.OpenParenthesisToken)
+		if (CurrentToken.Type is TokenType.SequenceToken)
 		{
-			var parameters = ParseParameters();
-			return new GSharpLineExpression(lineKeyword, parameters);
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			Random rand = new();
+			var count = rand.Next();
+			var lines = new Line[count];
+			for (int i = 0; i < count; i++)
+			{
+				lines[i] = new Line();
+			}
+			return new SequenceOf(id, TokenType.Line);
 		}
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+			var countOfParameters = 0;
+
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
+			{
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
+			}
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpLineExpression(lineKeyword, listOfIdentifiers);
+
+		}
+
+		var lineId = MatchToken(TokenType.Identifier);
 		return new GSharpLineExpression(lineKeyword, lineId.Text);
 	}
 	private GSharpExpression ParseSegment()
 	{
 		var segmentKeyword = MatchToken(TokenType.Segment);
-		var segmentId = MatchToken(TokenType.Identifier);
 
-		if (LookAhead(0).Type is TokenType.OpenParenthesisToken)
+		if (CurrentToken.Type is TokenType.SequenceToken)
 		{
-			var parameters = ParseParameters();
-			return new GSharpSegmentExpression(segmentKeyword, segmentId.Text);
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			Random rand = new();
+			var count = rand.Next();
+			var segments = new Segment[count];
+			for (int i = 0; i < count; i++)
+			{
+				segments[i] = new Segment();
+			}
+			return new SequenceOf(id, TokenType.Segment);
 		}
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+			var countOfParameters = 0;
+
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
+			{
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
+			}
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpSegmentExpression(segmentKeyword, listOfIdentifiers);
+
+		}
+		var segmentId = MatchToken(TokenType.Identifier);
 		return new GSharpSegmentExpression(segmentKeyword, segmentId.Text);
 	}
 	private GSharpExpression ParseRay()
 	{
 		var rayKeyword = MatchToken(TokenType.Ray);
-		if (LookAhead(1).Type is TokenType.Identifier)
-		{
-			var rayId = MatchToken(TokenType.Identifier);
-			return new GSharpRayExpression(rayKeyword, rayId.Text);
-		}
-		var parameters = ParseParameters();
-		return new GSharpRayExpression(rayKeyword, parameters);
 
+		if (CurrentToken.Type is TokenType.SequenceToken)
+		{
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			Random rand = new();
+			var count = rand.Next();
+			var rays = new Ray[count];
+			for (int i = 0; i < count; i++)
+			{
+				rays[i] = new Ray();
+			}
+			return new SequenceOf(id, TokenType.Ray);
+		}
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+
+			var countOfParameters = 0;
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
+			{
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
+			}
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpRayExpression(rayKeyword, listOfIdentifiers);
+
+		}
+		var rayId = MatchToken(TokenType.Identifier);
+		return new GSharpRayExpression(rayKeyword, rayId.Text);
 	}
 	private GSharpExpression ParseCircle()
 	{
 		var circleKeyWord = MatchToken(TokenType.Circle);
-		if (LookAhead(1).Type is TokenType.Identifier)
+
+		if (CurrentToken.Type is TokenType.SequenceToken)
 		{
-			var circleId = MatchToken(TokenType.Identifier);
-			return new GSharpCircleExpression(circleKeyWord, circleId.Text);
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			Random rand = new();
+			var count = rand.Next();
+			var circles = new Circle[count];
+			for (int i = 0; i < count; i++)
+			{
+				circles[i] = new Circle();
+			}
+			return new SequenceOf(id, TokenType.Circle);
 		}
-		var parameters = ParseParameters();
-		return new GSharpCircleExpression(circleKeyWord, parameters);
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+			var countOfParameters = 0;
+
+
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
+			{
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 2) throw new Exception("Cannot have more than 2 parameters");
+			}
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpCircleExpression(circleKeyWord, listOfIdentifiers);
+		}
+		var circleId = MatchToken(TokenType.Identifier);
+		return new GSharpCircleExpression(circleKeyWord, circleId.Text);
 	}
 
 	private GSharpExpression ParseArc()
-    {
-        var arcKeyWord = MatchToken(TokenType.Arc);
-        if (LookAhead(1).Type is TokenType.Identifier)
-        {
-            var arcId = MatchToken(TokenType.Identifier);
-            return new GSharpArcExpression(arcKeyWord, arcId.Text);
-        }
-        var parameters = ParseParameters();
-
-        return new GSharpArcExpression(arcKeyWord, parameters);
-    }
-
-    private List<string> ParseParameters()
-    {
-        MatchToken(TokenType.OpenParenthesisToken);
-        var parameters = ParseMatchIdentifiers();
-        MatchToken(TokenType.CloseParenthesisToken);
-        return parameters;
-    }
-
-    private GSharpColorExpression ParseColor()
 	{
-		var colorKeyWord = MatchToken(TokenType.Color);
-		var colorId = MatchToken(TokenType.Identifier);
-		return new GSharpColorExpression(colorKeyWord, colorId.Text);
+		var arcKeyWord = MatchToken(TokenType.Arc);
+
+		if (CurrentToken.Type is TokenType.SequenceToken)
+		{
+			MatchToken(TokenType.SequenceToken);
+			var id = MatchToken(TokenType.Identifier).Text;
+			Random rand = new();
+			var count = rand.Next();
+			var arcs = new Arc[count];
+			for (int i = 0; i < count; i++)
+			{
+				arcs[i] = new Arc();
+			}
+			return new SequenceOf(id, TokenType.Arc);
+		}
+
+		if (CurrentToken.Type is TokenType.OpenParenthesisToken)
+		{
+			var countOfParameters = 0;
+			var listOfIdentifiers = new List<GSharpExpression>();
+			MatchToken(TokenType.OpenParenthesisToken);
+			var expression = ParseExpression();
+			listOfIdentifiers.Add(expression);
+			while (CurrentToken.Type is TokenType.ColonToken)
+			{
+				TokenAhead();
+				var expressions = ParseExpression();
+				listOfIdentifiers.Add(expressions);
+				countOfParameters++;
+				if (countOfParameters > 4) throw new Exception("Cannot have more than 4 parameters");
+			}
+			MatchToken(TokenType.CloseParenthesisToken);
+			return new GSharpArcExpression(arcKeyWord, listOfIdentifiers);
+		}
+		var arcId = MatchToken(TokenType.Identifier);
+		return new GSharpArcExpression(arcKeyWord, arcId.Text);
+	}
+	private GSharpExpression ParseColor()
+	{
+		MatchToken(TokenType.Color);
+		WallEColors.ColorDraw!.Push(WallEColors._Colors[CurrentToken.Value.ToString()!]);
+		return new GSharpVoidEx();
+	}
+	private DrawExpression ParseDraw()
+	{
+		MatchToken(TokenType.DrawKeyword);
+		var expression = ParseExpression();
+		string message = "";
+		if (CurrentToken.Type == TokenType.StringToken)
+			message = CurrentToken.Text;
+		Color color = WallEColors.ColorDraw.Peek();
+		if (message == "")
+			return new DrawExpression(expression, color);
+		return new DrawExpression(expression, message, color);
 	}
 	private GSharpExpression ParseParenthesizedExpression()
 	{
@@ -495,9 +600,14 @@ class Parser
 	}
 	private GSharpExpression ParseNumber()
 	{
-		var number = MatchToken(TokenType.NumberToken);
-		var doubleNumber = Convert.ToDouble(number.Value);
-		return new GSharpLiteralExpression(number, doubleNumber);
+		if (CurrentToken.Type is TokenType.NumberToken)
+		{
+			var number = MatchToken(TokenType.NumberToken);
+			var convertedNumber = Convert.ToInt32(number.Value);
+			return new GSharpLiteralExpression(number, convertedNumber);
+		}
+		var dNumber = MatchToken(TokenType.DoubleNumber);
+		var doubleNumber = Convert.ToDouble(dNumber.Value);
+		return new GSharpLiteralExpression(dNumber, doubleNumber);
 	}
-
 }

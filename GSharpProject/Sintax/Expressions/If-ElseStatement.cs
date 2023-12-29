@@ -1,3 +1,5 @@
+using GSharpProject.Parsing;
+
 namespace GSharpProject;
 
 public class If_ElseStatement : GSharpExpression
@@ -15,5 +17,19 @@ public class If_ElseStatement : GSharpExpression
     public GSharpExpression IfCondition { get; }
     public GSharpExpression ThenStatement { get; }
     public GSharpExpression ElseClause { get; }
+
+    public override void CheckType(TypedScope typedScope)
+    {
+        IfCondition.CheckType(typedScope);
+        ThenStatement.CheckType(typedScope);
+        ElseClause.CheckType(typedScope);
+
+        if (ThenStatement.ExpressionType != ElseClause.ExpressionType)
+        {
+            throw new Exception("ThenStatement and ElseClause must be the same return type");
+        }
+
+        ExpressionType = ThenStatement.ExpressionType;
+    }
 }
 

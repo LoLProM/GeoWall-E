@@ -28,8 +28,13 @@ public class Lexer
     {
         if (IsNumber(match))
         {
-            double.TryParse(match.Value, out var value);
+            _ = int.TryParse(match.Value, out var value);
             return new Token(match.Value, TokenType.NumberToken, match.Index, value);
+        }
+        if (IsDoubleNumber(match))
+        {
+            _ = double.TryParse(match.Value, out var value);
+            return new Token(match.Value, TokenType.DoubleNumber, match.Index, value);
         }
         else if (IsString(match))
         {
@@ -42,6 +47,10 @@ public class Lexer
         else if (IsLetToken(match))
         {
             return new Token(match.Value, TokenType.LetToken, match.Index, match.Value);
+        }
+        else if (IsUndefine(match))
+        {
+            return new Token(match.Value, TokenType.Undefine, match.Index, match.Value);
         }
         else if (IsInToken(match))
         {
@@ -67,6 +76,10 @@ public class Lexer
         {
             return new Token(match.Value, TokenType.Line, match.Index, match.Value);
         }
+        else if (IsArcObject(match))
+        {
+            return new Token(match.Value, TokenType.Arc, match.Index, match.Value);
+        }
         else if (IsCircleObject(match))
         {
             return new Token(match.Value, TokenType.Circle, match.Index, match.Value);
@@ -78,6 +91,18 @@ public class Lexer
         else if (IsSegmentObject(match))
         {
             return new Token(match.Value, TokenType.Segment, match.Index, match.Value);
+        }
+        else if (IsDraw(match))
+        {
+            return new Token(match.Value, TokenType.Draw, match.Index, match.Value);
+        }
+        else if (IsImport(match))
+        {
+            return new Token(match.Value, TokenType.Import, match.Index, match.Value);
+        }
+        else if (IsSequenceToken(match))
+        {
+            return new Token(match.Value, TokenType.SequenceToken, match.Index, match.Value);
         }
         else if (IsIdentifier(match))
         {
@@ -130,8 +155,60 @@ public class Lexer
                 return new Token(",", TokenType.ColonToken, match.Index, null);
             case "...":
                 return new Token("...", TokenType.ThreePointsToken, match.Index, null);
+            case "_":
+                return new Token("_", TokenType.Underscore, match.Index, null);
         }
         throw new Exception($"! LEXICAL ERROR : '{match.Value}' is not a valid token");
+    }
+
+    private bool IsArcObject(Match match)
+    {
+        if (match.Value == "arc")
+        {
+            position++;
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsUndefine(Match match)
+    {
+        if (match.Value == "undefine")
+        {
+            position++;
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsSequenceToken(Match match)
+    {
+        if (match.Value == "sequence")
+        {
+            position++;
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsImport(Match match)
+    {
+        if (match.Value == "import")
+        {
+            position++;
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsDraw(Match match)
+    {
+        if (match.Value == "draw")
+        {
+            position++;
+            return true;
+        }
+        return false;
     }
 
     private bool IsSegmentObject(Match match)
@@ -274,7 +351,7 @@ public class Lexer
         }
         return false;
     }
-    private bool IsNumber(Match match)
+    private bool IsDoubleNumber(Match match)
     {
         var count = 0;
         var position = 0;
@@ -305,6 +382,28 @@ public class Lexer
             position++;
             return true;
         }
+    }
+    private bool IsNumber(Match match)
+    {
+        var count = 0;
+        var position = 0;
+
+        while (char.IsDigit(match.Value[position]))
+        {
+            position++;
+            count++;
+            if (position >= match.Value.Length)
+            {
+                break;
+            }
+            if (match.Value[position] == '.')
+            {
+                return false;
+            }
+        }
+        if (count == match.Length) return true;
+
+        return false;
     }
 }
 

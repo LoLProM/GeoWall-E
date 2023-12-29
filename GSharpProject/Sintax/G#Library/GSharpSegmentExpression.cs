@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GSharpProject.Parsing;
 
 namespace GSharpProject;
 
@@ -8,32 +9,37 @@ public class GSharpSegmentExpression : GSharpPrimitive
     {
         Segment = segment;
         Identifier = identifier;
-        ExpressionType = typeof(Line);
+        ExpressionType = new SingleType(typeof(Segment));
     }
 
-    public GSharpSegmentExpression(Token segment, List<string> coordinates)
+    public GSharpSegmentExpression(Token segment, List<GSharpExpression> coordinates)
     {
         Segment = segment;
         Coordinates = coordinates;
-        ExpressionType = typeof(Line);
+        ExpressionType = new SingleType(typeof(Segment));
     }
 
     public Token Segment { get; }
-    public List<string> Coordinates { get; }
+    public List<GSharpExpression> Coordinates { get; }
     public string Identifier { get; }
     public override TokenType TokenType => TokenType.Segment;
 
-}
-public class Measure : GSharpExpression
-{
-    public Measure(Token keyWord, List<string> paramaters)
+    public override void CheckType(TypedScope typedScope)
     {
-        KeyWord = keyWord;
-        Paramaters = paramaters;
+        if (Coordinates is not null)
+        {
+            var start = Coordinates[0];
+            var end = Coordinates[1];
+
+            start.CheckType(typedScope);
+            end.CheckType(typedScope);
+
+            if (start.ExpressionType != SingleType.Of<Point>() || end.ExpressionType != SingleType.Of<Point>())
+            {
+                throw new Exception("Line expression must be points Parameters");
+            }
+            ExpressionType = new SingleType(typeof(Segment));
+        }
+        ExpressionType = new SingleType(typeof(Segment));
     }
-
-    public Token KeyWord { get; }
-    public List<string> Paramaters { get; }
-    public override TokenType TokenType => TokenType.Measure;
-
 }
