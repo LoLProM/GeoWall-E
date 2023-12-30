@@ -2,16 +2,28 @@ using System.Collections;
 
 namespace GSharpProject;
 
-public abstract class Sequence : IEnumerable<object>
+public class Sequence : IEnumerable<object>
 {
-    public abstract IEnumerable<object> Elements {get;}
+    public virtual IEnumerable<object> Elements {get;}
 
-    public abstract Sequence RemainingSequence(int index);
-
-    public abstract int Count{get;}
+    public virtual int Count => Elements.Count();
     public bool IsEmpty()
     {
         return !Elements.Any();
+    }
+
+    public Sequence()
+    {
+        Elements = Enumerable.Empty<object>();
+    }
+    private Sequence(IEnumerable<object> elements)
+    {
+        Elements = elements;
+    }
+
+    public static Sequence operator +(Sequence sequenceA, Sequence sequenceB)
+    {
+        return new Sequence(sequenceA.Elements.Concat(sequenceB.Elements));
     }
 
     public IEnumerator<object> GetEnumerator()
@@ -22,5 +34,10 @@ public abstract class Sequence : IEnumerable<object>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public Sequence RemainingSequence(int index)
+    {
+        return new Sequence(Elements.Skip(index));
     }
 }

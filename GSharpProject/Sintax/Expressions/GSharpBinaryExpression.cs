@@ -21,7 +21,12 @@ public class GSharpBinaryExpression : GSharpExpression
         Left.CheckType(typedScope);
         Right.CheckType(typedScope);
 
-        if (Left.ExpressionType == SingleType.Of<Undefined>() || Right.ExpressionType == SingleType.Of<Undefined>() && !(Left.ExpressionType == SingleType.Of<Sequence>() && Right.ExpressionType == SingleType.Of<Undefined>()))
+        if (Left.ExpressionType is CompoundType leftCompoundType && OperatorToken.Type is TokenType.PlusToken && Right.ExpressionType is CompoundType rightCompoundType && leftCompoundType.ContentType.Type == rightCompoundType.ContentType.Type)
+        {
+            ExpressionType = new CompoundType(typeof(Sequence),leftCompoundType.ContentType);
+        }
+
+        else if (Left.ExpressionType == SingleType.Of<Undefined>() || Right.ExpressionType == SingleType.Of<Undefined>() && !(Left.ExpressionType is CompoundType))
         {
             ExpressionType = SingleType.Of<Undefined>();
         }

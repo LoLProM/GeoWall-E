@@ -10,7 +10,7 @@ public class GSharpEvaluator
     private int Count;
     private readonly int stackOverflow = 1000;
     private GSharpStatementsCollection _Node;
-	public List<(object, Color, string)> drawable;
+    public List<(object, Color, string)> drawable;
 
     public GSharpEvaluator(GSharpStatementsCollection node)
     {
@@ -27,13 +27,10 @@ public class GSharpEvaluator
         }
         return drawable;
     }
+
     private object EvaluateExpression(GSharpExpression node, EvalScope scope)
     {
         Count++;
-        if (Count > stackOverflow)
-        {
-            throw new Exception("!OVERFLOW ERROR : Hulk Stack overflow");
-        }
         switch (node)
         {
             case GSharpLiteralExpression literal:
@@ -96,14 +93,14 @@ public class GSharpEvaluator
 
     private object EvaluateDrawExpression(DrawExpression drawExpression, EvalScope scope)
     {
-        var drawableFigure = EvaluateExpression(drawExpression.Argument,scope);
+        var drawableFigure = EvaluateExpression(drawExpression.Argument, scope);
         if (drawExpression.Message is not null)
         {
-		drawable.Add((drawableFigure,drawExpression.Color,drawExpression.Message));
+            drawable.Add((drawableFigure, drawExpression.Color, drawExpression.Message));
         }
         else
         {
-            drawable.Add((drawableFigure,drawExpression.Color,""));
+            drawable.Add((drawableFigure, drawExpression.Color, ""));
         }
 
         return new GSharpVoidEx();
@@ -252,15 +249,15 @@ public class GSharpEvaluator
     private object EvaluateFunctionCallExpression(FunctionCallExpression functionCallExpression, EvalScope scope)
     {
         var functionDeclaration = StandardLibrary.Functions[functionCallExpression.FunctionName];
-
         var parameters = functionCallExpression.Parameters;
         var arguments = functionDeclaration.Arguments;
 
         var functionCallScope = new EvalScope();
         foreach (var (arg, param) in arguments.Zip(parameters))
         {
-            scope.AddChildScope(functionCallScope);
-            var evaluatedParameter = EvaluateExpression(param, functionCallScope);
+            var argsScope = new EvalScope();
+            scope.AddChildScope(argsScope);
+            var evaluatedParameter = EvaluateExpression(param, argsScope);
             functionCallScope.AddVariable(arg, evaluatedParameter);
         }
 
@@ -276,10 +273,9 @@ public class GSharpEvaluator
     private EvalScope EvaluateLetExpression(List<GSharpExpression> letExpressions, EvalScope scope)
     {
         var newScope = new EvalScope();
-
+        scope.AddChildScope(newScope);
         foreach (var expression in letExpressions)
         {
-            scope.AddChildScope(newScope);
             EvaluateExpression(expression, newScope);
         }
         return newScope;
@@ -289,7 +285,7 @@ public class GSharpEvaluator
     {
         var condition = EvaluateExpression(ifElseStatement.IfCondition, scope);
 
-        if (condition is int v && v == 0 || condition is int v1 && v1 == 0 || condition is Undefined || condition is Sequence t && t.IsEmpty())
+        if ((condition is int v && v == 0) || (condition is double v1 && v1 == 0) || condition is Undefined || (condition is Sequence t && t.IsEmpty()))
         {
             return EvaluateExpression(ifElseStatement.ElseClause, scope);
         }
@@ -303,8 +299,14 @@ public class GSharpEvaluator
         var value = EvaluateExpression(unary.InternalExpression, scope);
         if (unary.OperatorToken.Type == TokenType.MinusToken)
         {
-            if ((int)value == 0) return value;
-            return -(int)(value);
+            if (value is int integer)
+            {
+                return -1 * integer;
+            }
+            else if (value is double floating)
+            {
+                return -1 * floating;
+            }
         }
         else if (unary.OperatorToken.Type == TokenType.PlusToken)
         {
@@ -330,26 +332,41 @@ public class GSharpEvaluator
                     return left;
                 else if (left is Undefined && right is Sequence || left is Undefined && right is Undefined)
                     return Undefined.Value;
-                    if (left is int && right is int)
-                        return (int)left + (int)right;
-                    else if (left is Measure && right is Measure)
-                        return GetMeasureSum((Measure)left, (Measure)right);
+                if (left is int && right is int)
+                    return (int)left + (int)right;
+                if (left is int && right is double)
+                    return (int)left + (double)right;
+                if (left is double && right is int)
+                    return (double)left + (int)right;
+                if (left is double && right is double)
+                    return (double)left + (double)right;
+                else if (left is Measure && right is Measure)
+                    return GetMeasureSum((Measure)left, (Measure)right);
                 throw new Exception("");
-
             case TokenType.MinusToken:
                 if (left is Measure && right is Measure)
                     return GetMeasureDifference(left, right);
                 if (left is int && right is int)
                     return (int)left - (int)right;
+                if (left is int && right is double)
+                    return (int)left - (double)right;
+                if (left is double && right is int)
+                    return (double)left - (int)right;
+                if (left is double && right is double)
+                    return (double)left - (double)right;
                 throw new Exception("");
-
             case TokenType.MultiplyToken:
                 if (left is Measure && right is int || left is int && right is Measure)
                     return GetMeasureMultiplication(left, right);
                 if (left is int && right is int)
                     return (int)left * (int)right;
+                if (left is int && right is double)
+                    return (int)left * (double)right;
+                if (left is double && right is int)
+                    return (double)left * (int)right;
+                if (left is double && right is double)
+                    return (double)left * (double)right;
                 throw new Exception("");
-
             case TokenType.DivisionToken:
                 if (left is Measure && right is Measure)
                     return GetMeasureDivision(left, right);
@@ -360,23 +377,102 @@ public class GSharpEvaluator
                     return (int)left / (int)right;
                 }
                 throw new Exception("");
-
             case TokenType.ModuleToken:
-                return (int)left % (int)right;
+                if (left is int && right is int)
+                    return (int)left % (int)right;
+                if (left is int && right is double)
+                    return (int)left % (double)right;
+                if (left is double && right is int)
+                    return (double)left % (int)right;
+                if (left is double && right is double)
+                    return (double)left % (double)right;
+                throw new Exception("");
             case TokenType.SingleAndToken:
                 return (bool)left && (bool)right;
             case TokenType.SingleOrToken:
                 return (bool)left || (bool)right;
             case TokenType.BiggerToken:
-                return (int)left > (int)right;
+                if (left is int && right is int)
+                    if ((int)left > (int)right)
+                        return 1;
+                    else return 0;
+                if (left is int && right is double)
+                    if ((int)left > (double)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is int)
+                    if ((double)left > (int)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is double)
+                    if ((double)left > (double)right)
+                        return 1;
+                    else return 0;
+                throw new Exception("");
             case TokenType.BiggerOrEqualToken:
-                return (int)left >= (int)right;
+                if (left is int && right is int)
+                    return (int)left >= (int)right;
+                if (left is int && right is double)
+                    return (int)left >= (double)right;
+                if (left is double && right is int)
+                    return (double)left >= (int)right;
+                if (left is double && right is double)
+                    return (double)left >= (double)right;
+                throw new Exception("");
             case TokenType.LowerToken:
-                return (int)left < (int)right;
+                if (left is int && right is int)
+                    if ((int)left < (int)right)
+                        return 1;
+                    else return 0;
+                if (left is int && right is double)
+                    if ((int)left < (double)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is int)
+                    if ((double)left < (int)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is double)
+                    if ((double)left < (double)right)
+                        return 1;
+                    else return 0;
+                throw new Exception("");
             case TokenType.LowerOrEqualToken:
-                return (int)left <= (int)right;
+                if (left is int && right is int)
+                    if ((int)left <= (int)right)
+                        return 1;
+                    else return 0;
+                if (left is int && right is double)
+                    if ((int)left <= (double)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is int)
+                    if ((double)left <= (int)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is double)
+                    if ((double)left <= (double)right)
+                        return 1;
+                    else return 0;
+                throw new Exception("");
             case TokenType.EqualToken:
-                return Equals(left, right);
+                if (left is int && right is int)
+                    if ((int)left == (int)right)
+                        return 1;
+                    else return 0;
+                if (left is int && right is double)
+                    if ((int)left == (double)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is int)
+                    if ((double)left == (int)right)
+                        return 1;
+                    else return 0;
+                if (left is double && right is double)
+                    if ((double)left == (double)right)
+                        return 1;
+                    else return 0;
+                throw new Exception("");
             case TokenType.NotEqualToken:
                 return !Equals(left, right);
             case TokenType.ExponentialToken:
@@ -388,16 +484,7 @@ public class GSharpEvaluator
 
     private object SequenceSums(Sequence left, Sequence right)
     {
-        var resultSequence = new LiteralSequence();
-        foreach(var element in left)
-        {
-            resultSequence.AddElement(element);
-        }
-        foreach(var element in right)
-        {
-            resultSequence.AddElement(element);
-        }
-        return resultSequence;
+        return left + right;
     }
 
     private object GetMeasureDivision(object left, object right)

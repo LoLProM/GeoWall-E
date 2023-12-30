@@ -4,14 +4,12 @@ using GSharpProject.Parsing;
 
 namespace GSharpProject
 {
-    public class Point : GSharpExpression, IFigure
+    public class Point : IFigure
     {
         public double X;
         public double Y;
 
         public Type Type => typeof(Point);
-
-        public override TokenType TokenType => TokenType.Point;
 
         public Point()
         {
@@ -30,11 +28,6 @@ namespace GSharpProject
         public IEnumerable<Point> PointsOf()
         {
             yield return new Point(X, Y);
-        }
-
-        public override void CheckType(TypedScope typedScope)
-        {
-            ExpressionType = new SingleType(Type);
         }
     }
 
@@ -109,9 +102,7 @@ namespace GSharpProject
                 default:
                     return p1.X >= StartPoint.X;
             }
-
         }
-
         public IEnumerable<Point> PointsOf()
         {
             Random ran = new();
@@ -124,9 +115,7 @@ namespace GSharpProject
                 yield return new Point(x, y);
             }
         }
-
         public Type Type => typeof(Ray);
-
         public Point StartPoint { get; }
         public Point EndPoint { get; }
     }

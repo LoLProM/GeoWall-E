@@ -52,27 +52,35 @@ public class RecursionChecker
 
         if (expression is GSharpPointExpression gSharpPointExpression)
         {
+            if (gSharpPointExpression.Coordinates is not null)
             return gSharpPointExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpCircleExpression gSharpCircleExpression)
         {
+            if (gSharpCircleExpression.Coordinates is not null)
             return gSharpCircleExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
 
         if (expression is GSharpLineExpression gSharpLineExpression)
         {
+            if (gSharpLineExpression.Coordinates is not null)
+
             return gSharpLineExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpArcExpression gSharpArcExpression)
         {
+            if (gSharpArcExpression.Coordinates is not null)
             return gSharpArcExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpSegmentExpression gSharpSegmentExpression)
         {
+            if (gSharpSegmentExpression.Coordinates is not null)
             return gSharpSegmentExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpRayExpression gSharpRayExpression)
         {
+            if (gSharpRayExpression.Coordinates is not null)
+
             return gSharpRayExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
 

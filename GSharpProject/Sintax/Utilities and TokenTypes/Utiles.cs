@@ -16,40 +16,48 @@ public static class Utiles
         double y = (p1.Y + p2.Y) / 2;
         return new Point(x, y);
     }
-    public static List<Point> Interception(object f1, object f2)
+    public static Sequence Interception(object f1, object f2)
     {
+        var returnSequence = new LiteralSequence();
+        var listOfPoints = new List<Point>();
         if (f1 is Circle && f2 is Circle)
-            return InterceptionCircle((Circle)f1,(Circle)f2);
-        if (f1 is Circle && f2 is Line)
-            return InterceptionLine_Circle((Circle)f1,(Line)f2);
-        if (f1 is Line && f2 is Line)
-            return InterceptionLine((Line)f1,(Line)f2);
-        if (f1 is Segment && f2 is Segment)
-            return InterceptionSegment((Segment)f1,(Segment)f2);
-        if (f1 is Segment && f2 is Circle)
-            return InterceptionSegment_Circle((Segment)f1,(Circle)f2);
-        if (f1 is Segment && f2 is Line)
-            return InterceptionSegment_Line((Segment)f1,(Line)f2);
-        if (f1 is Arc && f2 is Arc)
-            return InterceptionArc((Arc)f1,(Arc)f2);
-        if (f1 is Arc && f2 is Circle)
-            return InterceptionArc_Circle((Arc)f1,(Circle)f2);
-        if (f1 is Arc && f2 is Segment)
-            return InterceptionArc_Segment((Arc)f1,(Segment)f2);
-        if (f1 is Arc && f2 is Line)
-            return InterceptionArc_Line((Arc)f1,(Line)f2);
-        if (f1 is Ray && f2 is Ray)
-            return InterceptionRay((Ray)f1,(Ray)f2);
-        if (f1 is Ray && f2 is Line)
-            return InterceptionRay_Line((Ray)f1,(Line)f2);
-        if (f1 is Ray && f2 is Circle)
-            return InterceptionRay_Circle((Ray)f1,(Circle)f2);
-        if (f1 is Ray && f2 is Segment)
-            return InterceptionRay_Segment((Ray)f1,(Segment)f2);
-        if (f1 is Ray && f2 is Circle)
-            return InterceptionRay_Circle((Ray)f1,(Circle)f2);
-            
-        return new List<Point>();
+            listOfPoints = InterceptionCircle((Circle)f1, (Circle)f2);
+        else if (f1 is Circle && f2 is Line)
+            listOfPoints = InterceptionLine_Circle((Circle)f1, (Line)f2);
+        else if (f1 is Line && f2 is Circle)
+            listOfPoints = InterceptionLine_Circle((Circle)f2, (Line)f1);
+        else if (f1 is Line && f2 is Line)
+            listOfPoints = InterceptionLine((Line)f1, (Line)f2);
+        else if (f1 is Segment && f2 is Segment)
+            listOfPoints = InterceptionSegment((Segment)f1, (Segment)f2);
+        else if (f1 is Segment && f2 is Circle)
+            listOfPoints = InterceptionSegment_Circle((Segment)f1, (Circle)f2);
+        else if (f1 is Segment && f2 is Line)
+            listOfPoints = InterceptionSegment_Line((Segment)f1, (Line)f2);
+        else if (f1 is Arc && f2 is Arc)
+            listOfPoints = InterceptionArc((Arc)f1, (Arc)f2);
+        else if (f1 is Arc && f2 is Circle)
+            listOfPoints = InterceptionArc_Circle((Arc)f1, (Circle)f2);
+        else if (f1 is Arc && f2 is Segment)
+            listOfPoints = InterceptionArc_Segment((Arc)f1, (Segment)f2);
+        else if (f1 is Arc && f2 is Line)
+            listOfPoints = InterceptionArc_Line((Arc)f1, (Line)f2);
+        else if (f1 is Ray && f2 is Ray)
+            listOfPoints = InterceptionRay((Ray)f1, (Ray)f2);
+        else if (f1 is Ray && f2 is Line)
+            listOfPoints = InterceptionRay_Line((Ray)f1, (Line)f2);
+        else if (f1 is Ray && f2 is Circle)
+            listOfPoints = InterceptionRay_Circle((Ray)f1, (Circle)f2);
+        else if (f1 is Ray && f2 is Segment)
+            listOfPoints = InterceptionRay_Segment((Ray)f1, (Segment)f2);
+        else if (f1 is Ray && f2 is Circle)
+            listOfPoints = InterceptionRay_Circle((Ray)f1, (Circle)f2);
+
+        foreach (var element in listOfPoints)
+        {
+            returnSequence.AddElement(element);
+        }
+        return returnSequence;
     }
 
     public static List<Point> InterceptionCircle(Circle c1, Circle c2)

@@ -19,14 +19,6 @@ public class RangeSequence : Sequence
             yield return element;
         }
     }
-
-    public override int Count => End - Start + 1;
-
     public int Start { get; }
     public int End { get; }
-
-    public override Sequence RemainingSequence(int index)
-    {
-        return new RangeSequence(Start + index,End);
-    }
 }

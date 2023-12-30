@@ -23,6 +23,6 @@ public class FunctionDeclarationExpression : GSharpExpression
             FunctionBody.CheckType(typedScope);
             ExpressionType = FunctionBody.ExpressionType;
         }
-        ExpressionType = new SingleType(typeof(Undefined));
+        else ExpressionType = new SingleType(typeof(Undefined));
     }
 }

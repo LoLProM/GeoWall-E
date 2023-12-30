@@ -76,11 +76,6 @@ public static class TypeCheckerHelper
 
         [(SingleType.Of<Measure>(), TokenType.NotEqualToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
 
-
-        [(SingleType.Of<bool>(), TokenType.SingleAndToken, SingleType.Of<bool>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<bool>(), TokenType.SingleOrToken, SingleType.Of<bool>())] = SingleType.Of<bool>(),//
-
         [(SingleType.Of<double>(), TokenType.BiggerOrEqualToken, SingleType.Of<double>())] = SingleType.Of<bool>(),//
 
         [(SingleType.Of<int>(), TokenType.BiggerOrEqualToken, SingleType.Of<int>())] = SingleType.Of<bool>(),//
@@ -117,31 +112,17 @@ public static class TypeCheckerHelper
 
         [(SingleType.Of<int>(), TokenType.EqualToken, SingleType.Of<double>())] = SingleType.Of<bool>(),//
 
-        [(SingleType.Of<bool>(), TokenType.EqualToken, SingleType.Of<bool>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.SingleAndToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.SingleOrToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.BiggerOrEqualToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.BiggerToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.LowerToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.LowerOrEqualToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
-        [(SingleType.Of<Measure>(), TokenType.EqualToken, SingleType.Of<Measure>())] = SingleType.Of<bool>(),//
-
         [(SingleType.Of<Sequence>(), TokenType.PlusToken, SingleType.Of<Sequence>())] = SingleType.Of<Sequence>(),//
 
         [(SingleType.Of<Sequence>(), TokenType.PlusToken, SingleType.Of<Undefined>())] = SingleType.Of<Sequence>(),//
-
-        
     };
 
     internal static ExpressionType GetBinaryOperatorType(GSharpExpression left, Token operatorToken, GSharpExpression right)
     {
+        if (TokenData.BooleanTokens.Contains(operatorToken.Type))
+        {
+            return SingleType.Of<int>();
+        }
         if (!binaryTypesDic.ContainsKey((left.ExpressionType, operatorToken.Type, right.ExpressionType)!))
         {
             throw new Exception($"!SEMANTIC ERROR : Invalid expression: Can't operate {left.ExpressionType.Type} with {right.ExpressionType.Type} using {operatorToken.Text}");

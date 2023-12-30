@@ -38,31 +38,25 @@ public static class StandardLibrary
     {
         return new()
         {
-            ["sin"] = new FunctionDeclarationExpression("sin", new() { "x" }, new FunctionReference((scope) => Math.Sin(Convert.ToDouble(scope.GetValue("x"))))),
+            ["sin"] = new FunctionDeclarationExpression("sin", new() { "x" }, new FunctionReference((scope) => Math.Sin(Convert.ToDouble(scope.GetValue("x"))), SingleType.Of<double>())),
 
-            ["cos"] = new FunctionDeclarationExpression("cos", new() { "x" }, new FunctionReference((scope) => Math.Cos(Convert.ToDouble(scope.GetValue("x"))))),
+            ["cos"] = new FunctionDeclarationExpression("cos", new() { "x" }, new FunctionReference((scope) => Math.Cos(Convert.ToDouble(scope.GetValue("x"))), SingleType.Of<double>())),
 
-            ["sqrt"] = new FunctionDeclarationExpression("sqrt", new() { "x" }, new FunctionReference((scope) => Math.Sqrt(Convert.ToDouble(scope.GetValue("x"))))),
+            ["sqrt"] = new FunctionDeclarationExpression("sqrt", new() { "x" }, new FunctionReference((scope) => Math.Sqrt(Convert.ToDouble(scope.GetValue("x"))), SingleType.Of<double>())),
 
-            ["log"] = new FunctionDeclarationExpression("log", new() { "b", "p" }, new FunctionReference((scope) => Math.Log(Convert.ToDouble(scope.GetValue("p")),Convert.ToDouble(scope.GetValue("p"))))),
+            ["log"] = new FunctionDeclarationExpression("log", new() { "b", "p" }, new FunctionReference((scope) => Math.Log(Convert.ToDouble(scope.GetValue("p")),Convert.ToDouble(scope.GetValue("p"))), SingleType.Of<double>())),
 
-            ["log2"] = new FunctionDeclarationExpression("log2", new() { "p" }, new FunctionReference((scope) => Math.Log2(Convert.ToDouble(scope.GetValue("p"))))),
+            ["intersect"] = new FunctionDeclarationExpression("intersect", new() { "c1", "c2" }, new FunctionReference((scope) => Utiles.Interception(scope.GetValue("c1"), scope.GetValue("c2")), new CompoundType(typeof(LiteralSequence), SingleType.Of<Point>()))),
 
-            ["log10"] = new FunctionDeclarationExpression("log10", new() { "p" }, new FunctionReference((scope) => Math.Log10(Convert.ToDouble(scope.GetValue("p"))))),
+            ["samples"] = new FunctionDeclarationExpression("samples", new(){},new FunctionReference((scope)=> Utiles.GetSamples(),new CompoundType(typeof(InfiniteSequence), SingleType.Of<Point>()))),
 
-            ["print"] = new FunctionDeclarationExpression("print", new() { "x" }, new FunctionReference((scope) => scope.GetValue("x").ToString()!)),
+            ["points"] = new FunctionDeclarationExpression("points", new(){"f"}, new FunctionReference((scope)=> Utiles.GetPointsOf(scope.GetValue("f")),new CompoundType(typeof(InfiniteSequence), SingleType.Of<Point>()))),
 
-            ["intercept"] = new FunctionDeclarationExpression("intercept", new() { "c1", "c2" }, new FunctionReference((scope) => Utiles.Interception(scope.GetValue("f1"), scope.GetValue("f1")))),
+            ["random"] = new FunctionDeclarationExpression("random", new(){}, new FunctionReference((scope)=> Utiles.GetRandom(),new CompoundType(typeof(LiteralSequence), SingleType.Of<double>()))),
 
-            ["samples"] = new FunctionDeclarationExpression("samples", new(){},new FunctionReference((scope)=> Utiles.GetSamples())),
+            ["count"] = new FunctionDeclarationExpression("count", new(){"x"}, new FunctionReference((scope)=> Utiles.GetCountSequence((Sequence)scope.GetValue("x")), SingleType.Of<int>())),
 
-            ["points"] = new FunctionDeclarationExpression("points", new(){"f"}, new FunctionReference((scope)=> Utiles.GetPointsOf(scope.GetValue("f")))),
-
-            ["random"] = new FunctionDeclarationExpression("random", new(){}, new FunctionReference((scope)=> Utiles.GetRandom())),
-            
-            ["count"] = new FunctionDeclarationExpression("count", new(){"x"}, new FunctionReference((scope)=> Utiles.GetCountSequence((Sequence)scope.GetValue("x")))),
-
-            ["restore"] = new FunctionDeclarationExpression("restore", new(){}, new FunctionReference((scope)=> WallEColors.ColorDraw.Pop) ),
+            ["restore"] = new FunctionDeclarationExpression("restore", new(){}, new FunctionReference((scope)=> WallEColors.ColorDraw.Pop, SingleType.Of<Color>())),
         };
     }
 }

@@ -26,9 +26,11 @@ public class DrawExpression : GSharpExpression
     public override void CheckType(TypedScope typedScope)
     {
         Argument.CheckType(typedScope);
-        if (Argument.ExpressionType != SingleType.Of<Sequence>() && Argument.ExpressionType != SingleType.Of<IFigure>() && Argument.ExpressionType != SingleType.Of<Point>() && Argument.ExpressionType != SingleType.Of<Circle>()&& Argument.ExpressionType != SingleType.Of<Line>() && Argument.ExpressionType != SingleType.Of<Segment>() && Argument.ExpressionType != SingleType.Of<Ray>() && Argument.ExpressionType != SingleType.Of<Arc>())
+
+        if (Argument.ExpressionType is CompoundType compoundType && !compoundType.ContentType.Type.GetInterfaces().Contains(typeof(IFigure)) || Argument.ExpressionType is SingleType singleType && !singleType.Type.GetInterfaces().Contains(typeof(IFigure)))
         {
-            throw new Exception("No se puede pintar");
+            throw new Exception("no se puede pintar");
         }
+
     }
 }

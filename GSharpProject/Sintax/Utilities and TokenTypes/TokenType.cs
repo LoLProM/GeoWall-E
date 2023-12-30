@@ -1,8 +1,22 @@
 namespace GSharpProject;
 
+public static class TokenData
+{
+public static readonly HashSet<TokenType> BooleanTokens = new()
+{
+    TokenType.LowerToken,
+    TokenType.BiggerToken,
+    TokenType.LowerOrEqualToken,
+    TokenType.BiggerOrEqualToken,
+    TokenType.NotEqualToken,
+    TokenType.SingleAndToken,
+    TokenType.SingleOrToken,
+    TokenType.EqualToken,
+};
+}
 public enum TokenType
 {
-    //Tokens
+
     NumberToken,
     PlusToken,
     MinusToken,
@@ -18,9 +32,9 @@ public enum TokenType
     BiggerOrEqualToken,
     NotEqualToken,
     ExponentialToken,
+    ModuleToken,
     SingleAndToken,
     SingleOrToken,
-    ModuleToken,
     EqualToken,
     SingleEqualToken,
     WrongToken,

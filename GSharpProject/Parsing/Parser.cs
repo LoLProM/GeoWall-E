@@ -564,6 +564,7 @@ class Parser
 	private GSharpExpression ParseColor()
 	{
 		MatchToken(TokenType.Color);
+		MatchToken(TokenType.Identifier);
 		WallEColors.ColorDraw!.Push(WallEColors._Colors[CurrentToken.Value.ToString()!]);
 		return new GSharpVoidEx();
 	}

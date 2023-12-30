@@ -17,7 +17,6 @@ public static class WallEColors
     };
 
     public static Stack<Color>? ColorDraw;
-
     public static void InitializeColor()
     {
         ColorDraw = new();
