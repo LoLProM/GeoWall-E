@@ -1,0 +1,53 @@
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.AssemblyReference.cache
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.GEOWALL_E.resources
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.Properties.Resources.resources
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.GenerateResource.cache
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfoInputs.cache
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfo.cs
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.CoreCompileInputs.cache
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.exe
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.deps.json
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.runtimeconfig.json
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\refint\GEOWALL-E.dll
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.genruntimeconfig.cache
+C:\Users\Richard\Desktop\Wall-E empaste\GEOWALL-E-main\GEOWALL-E\obj\Debug\net6.0-windows\ref\GEOWALL-E.dll
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.exe
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.deps.json
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.runtimeconfig.json
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.AssemblyReference.cache
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.GEOWALL_E.resources
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.Properties.Resources.resources
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.GenerateResource.cache
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfoInputs.cache
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfo.cs
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.CoreCompileInputs.cache
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\refint\GEOWALL-E.dll
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.genruntimeconfig.cache
+C:\Users\Richard\Desktop\New folder (2)\GEOWALL-E\obj\Debug\net6.0-windows\ref\GEOWALL-E.dll
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.exe
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.deps.json
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.runtimeconfig.json
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\bin\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.GEOWALL_E.resources
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL_E.Properties.Resources.resources
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.GenerateResource.cache
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfoInputs.cache
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.AssemblyInfo.cs
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.csproj.CoreCompileInputs.cache
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.dll
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\refint\GEOWALL-E.dll
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.pdb
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\GEOWALL-E.genruntimeconfig.cache
+C:\Users\abelp\OneDrive\Desktop\GEOWALL-E\obj\Debug\net6.0-windows\ref\GEOWALL-E.dll

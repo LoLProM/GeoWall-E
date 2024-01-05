@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace GSharpProject;
 public static class Utiles
+//Clase statica donde se hacen todas las operaciones matematicas de intersecciones del programa
 {
     public static double EuclideanDistance(Point p1, Point p2)
     {
@@ -111,7 +112,7 @@ public static class Utiles
             double interceptY2 = m * interceptX2 + n;
             Point p1 = new Point(interceptX1, interceptY1);
             intercept.Add(p1);
-            if (!p1.PointBelong(new Point(interceptX2, interceptY2))) intercept.Add(new Point(interceptX2, interceptY2));
+            intercept.Add(new Point(interceptX2, interceptY2));
             return intercept;
         }
         else
@@ -143,7 +144,7 @@ public static class Utiles
         if (direction == 0)
         {
             if (l1.PointBelong(l2.EndPoint))
-                return null;//Modificar cuando se implemente Pointsof
+                return new List<Point>();//Modificar cuando se implemente Pointsof
             return new List<Point>();
         }
         double lambda = ((c - a) * D + (b - d) * C) / (D * A - B * C);
@@ -354,9 +355,25 @@ public static class Utiles
             yield return new Point();
     }
 
-    internal static IEnumerable<Point> GetPointsOf(object v)
+    internal static IEnumerator<Point> GetPointsOf(object v)
     {
-        return ((IFigure)v).PointsOf();
+        switch (v)
+        {
+            case Circle:
+                return ((Circle)v).PointsOf().GetEnumerator();
+            case Line:
+                return ((Line)v).PointsOf().GetEnumerator();
+            case Ray:
+                return ((Ray)v).PointsOf().GetEnumerator();
+            case Segment:
+                return ((Segment)v).PointsOf().GetEnumerator();
+            case Arc:
+                return ((Arc)v).PointsOf().GetEnumerator();
+            default:
+                throw new Exception("vrjkhewefh");
+
+        }
+
     }
 
     internal static IEnumerator<double> GetRandom()

@@ -1,6 +1,6 @@
 
 namespace GSharpProject;
-
+//Tipo secuencia infinita con sus elementos
 public class InfiniteSequence : Sequence
 {
     public InfiniteSequence(int start)

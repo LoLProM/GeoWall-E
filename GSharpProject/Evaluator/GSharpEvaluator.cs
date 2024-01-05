@@ -4,11 +4,12 @@ using System.Linq;
 using GSharpProject.Parsing;
 
 namespace GSharpProject.Evaluator;
+//Evaluador del programa recibimos una collecion de statements y los vamos evaluando nodo por nodo finalmente retornamos una lista con objetos q van a ser pintados
 
 public class GSharpEvaluator
 {
     private int Count;
-    private readonly int stackOverflow = 1000;
+    private readonly int stackOverflow = 1000000;
     private GSharpStatementsCollection _Node;
     public List<(object, Color, string)> drawable;
 
@@ -22,7 +23,7 @@ public class GSharpEvaluator
         EvalScope scope = StandardLibrary.Variables;
         foreach (var statement in _Node.Statements)
         {
-            if (statement is FunctionDeclarationExpression) continue;
+            if (statement is FunctionDeclarationExpression || statement is GSharpVoidEx) continue;
             EvaluateExpression(statement, scope);
         }
         return drawable;
@@ -63,6 +64,8 @@ public class GSharpEvaluator
                 return EvaluateRayExpression(rayExpression, scope);
             case DrawExpression drawExpression:
                 return EvaluateDrawExpression(drawExpression, scope);
+            case ColorExpression colorExpression:
+                return EvaluateColorExpression(colorExpression, scope);
             case GSharpRangeSequence sequenceExpression:
                 return EvaluateRangeSequenceExpression(sequenceExpression, scope);
             case GSharpInfiniteSequence sequenceExpression:
@@ -77,6 +80,13 @@ public class GSharpEvaluator
                 return EvaluateSequenceOf(sequenceExpression, scope);
         }
         throw new Exception($"! SYNTAX ERROR : Unexpected node {node}");
+    }
+
+    private object EvaluateColorExpression(ColorExpression colorExpression, EvalScope scope)
+    {
+        var color = colorExpression.Color;
+        WallEColors.ColorDraw.Push(WallEColors._Colors[color]);
+        return new GSharpVoidEx();
     }
 
     private object EvaluateParenthesesExpression(GSharpParenthesesExpression parenthesesExpression, EvalScope scope)
@@ -96,11 +106,11 @@ public class GSharpEvaluator
         var drawableFigure = EvaluateExpression(drawExpression.Argument, scope);
         if (drawExpression.Message is not null)
         {
-            drawable.Add((drawableFigure, drawExpression.Color, drawExpression.Message));
+            GEOWALL_E.GEOWALL_E.Draw(new List<(object, Color, string)> { (drawableFigure, WallEColors.ColorDraw.Peek(), drawExpression.Message) });
         }
         else
         {
-            drawable.Add((drawableFigure, drawExpression.Color, ""));
+            GEOWALL_E.GEOWALL_E.Draw(new List<(object, Color, string)> { (drawableFigure, WallEColors.ColorDraw.Peek(), "") });
         }
 
         return new GSharpVoidEx();
@@ -114,13 +124,15 @@ public class GSharpEvaluator
         {
             sequenceOf.AddElement(element);
         }
+        //anadimos cada figura y retornamos la secuencia literal 
         return sequenceOf;
     }
 
     private static IEnumerable<IFigure> GetFigures(SequenceOf sequenceExpression)
     {
-        var range = Enumerable.Range(0, new Random().Next());
-        IEnumerable<IFigure> figures = sequenceExpression.TokenType switch
+        //verificamos de que tipo es la expresion de secuencia y retornamos valores random en cuestion de la figura 
+        var range = Enumerable.Range(0, new Random().Next(0, 100));
+        IEnumerable<IFigure> figures = sequenceExpression.ElementsType switch
         {
             TokenType.Point => range.Select(_ => new Point()),
             TokenType.Circle => range.Select(_ => new Circle()),
@@ -135,6 +147,7 @@ public class GSharpEvaluator
 
     private object EvaluateLiteralSequenceExpression(GSharpLiteralSequence sequenceExpression, EvalScope scope)
     {
+        //vamos evaluando cada eleemento de la secuencia literal q ya previamente con el typechecker sabemos q todos son del mismo tipo
         var literalSequence = new LiteralSequence();
         foreach (var element in sequenceExpression.Elements)
         {
@@ -146,6 +159,7 @@ public class GSharpEvaluator
 
     private object EvaluateInfiniteSequenceExpression(GSharpInfiniteSequence sequenceExpression, EvalScope scope)
     {
+        //evaluamos el primer elemento y retornamos una secuencia infinita
         var start = EvaluateExpression(sequenceExpression.First, scope);
         var infiniteSequence = new InfiniteSequence((int)start);
         return infiniteSequence;
@@ -153,12 +167,14 @@ public class GSharpEvaluator
 
     private object EvaluateRangeSequenceExpression(GSharpRangeSequence sequenceExpression, EvalScope scope)
     {
+        //evaluamos el primer numero luego el ultimo y retornamos una nueva secuencia de rango con esos valores
         var start = EvaluateExpression(sequenceExpression.First, scope);
         var end = EvaluateExpression(sequenceExpression.Last, scope);
         var rangeSequence = new RangeSequence((int)start, (int)end);
         return rangeSequence;
     }
 
+    #region Evaluamos cada objeto pintable del lenguaje evaluando sus coordenadas y creando un nuevo tipo de cada objeto
     private object EvaluateRayExpression(GSharpRayExpression rayExpression, EvalScope scope)
     {
         if (rayExpression.Coordinates is not null)
@@ -242,6 +258,8 @@ public class GSharpEvaluator
         scope.AddVariable(pointExpression.Identifier, pointExpression.Value);
         return pointExpression.Value;
     }
+    #endregion
+
     private static object EvaluateFunctionReference(FunctionReference functionReference, EvalScope scope)
     {
         return functionReference.Eval(scope);
@@ -266,6 +284,7 @@ public class GSharpEvaluator
     }
     private object EvaluateLetInExpression(Let_In_Expression letInExpression, EvalScope scope)
     {
+        //evaluamos cada expresion de los let returnamos un scope y evaluamos el in
         var inScope = EvaluateLetExpression(letInExpression.LetExpressions, scope);
         var inExpression = EvaluateExpression(letInExpression.InExpression, inScope);
         return inExpression;
@@ -283,9 +302,10 @@ public class GSharpEvaluator
 
     private object EvaluateIfElseStatement(If_ElseStatement ifElseStatement, EvalScope scope)
     {
+        //Evaluamos la condicion del if si se cumple evaluamos el cuerpo sino el else
         var condition = EvaluateExpression(ifElseStatement.IfCondition, scope);
 
-        if ((condition is int v && v == 0) || (condition is double v1 && v1 == 0) || condition is Undefined || (condition is Sequence t && t.IsEmpty()))
+        if ((condition is bool a && a == false) || (condition is int v && v == 0) || (condition is double v1 && v1 == 0) || condition is Undefined || (condition is Sequence t && t.IsEmpty()))
         {
             return EvaluateExpression(ifElseStatement.ElseClause, scope);
         }
@@ -322,8 +342,9 @@ public class GSharpEvaluator
     {
         var left = EvaluateExpression(binaryExpression.Left, scope);
         var right = EvaluateExpression(binaryExpression.Right, scope);
+        //Evaluamos la izquierda de la expresion luego la derecha y verificamos el tipo del operador y evaluamos siempre chequeando que los tipos de la izquierda y derecha sean del mismo tipo a la hora de evaluar con un operador en especifico
 
-        switch (binaryExpression.OperatorToken.Type)//Hacer los casos
+        switch (binaryExpression.OperatorToken.Type)
         {
             case TokenType.PlusToken:
                 if (left is Sequence s && right is Sequence p)
@@ -484,6 +505,7 @@ public class GSharpEvaluator
 
     private object SequenceSums(Sequence left, Sequence right)
     {
+        //con una sobrecarga del operador de c# realizamos la suma de dos secuencias cualesquiera
         return left + right;
     }
 
@@ -538,6 +560,7 @@ public class GSharpEvaluator
     }
     private object EvaluateAssignmentExpression(AssignmentExpression assignmentExpression, EvalScope scope)
     {
+        //Evaluamos la expresion de la derecha si es una secuencia entonces realizamos el match correspondiente 
         var evaluatedExpression = EvaluateExpression(assignmentExpression.Expression, scope);
 
         if (evaluatedExpression is Sequence sequence)

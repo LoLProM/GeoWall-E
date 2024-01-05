@@ -2,7 +2,7 @@ using System;
 using GSharpProject.Parsing;
 
 namespace GSharpProject;
-
+//Esta clase es la representacion de la Expresion Binaria que tiene una parte izquierda una derecha y un operador el type de la expresion devuelve si la izquierda y la derecha son de un tipo en especifico dependiendo del operador 
 public class GSharpBinaryExpression : GSharpExpression
 {
     public GSharpBinaryExpression(GSharpExpression left, Token operatorToken, GSharpExpression right)
@@ -18,6 +18,7 @@ public class GSharpBinaryExpression : GSharpExpression
     public override TokenType TokenType => TokenType.BinaryExpression;
     public override void CheckType(TypedScope typedScope)
     {
+        //verificamos el tipo de la izquierda luego de la derecha y luego segun el operador verificamos si es una expresion valida
         Left.CheckType(typedScope);
         Right.CheckType(typedScope);
 

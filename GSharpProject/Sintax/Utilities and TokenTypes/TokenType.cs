@@ -2,7 +2,7 @@ namespace GSharpProject;
 
 public static class TokenData
 {
-public static readonly HashSet<TokenType> BooleanTokens = new()
+    public static readonly HashSet<TokenType> BooleanTokens = new()
 {
     TokenType.LowerToken,
     TokenType.BiggerToken,
@@ -89,4 +89,6 @@ public enum TokenType
     DifferenceMeasure,
     MultiplicationMeasure,
     DivisionMeasure,
+    Restore,
+    ColorExpression
 }

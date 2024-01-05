@@ -1,6 +1,6 @@
 namespace GSharpProject;
 
-internal class Undefined
+internal class Undefined //tipo undefined
 {
     private Undefined() {}
     private static Undefined undef = null!;

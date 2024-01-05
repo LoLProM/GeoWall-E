@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using GSharpProject.Parsing;
 
 namespace GSharpProject;
-
+//Expression de tipo arco 
 public class GSharpArcExpression : GSharpPrimitive
 {
     public GSharpArcExpression(Token arc, string identifier)
@@ -27,6 +27,7 @@ public class GSharpArcExpression : GSharpPrimitive
     {
         if (Coordinates is not null)
         {
+            //Checkeamos cada una de sus coordenadas y verificamos q tengan el tipo correcto
             var center = Coordinates[0];
             var start = Coordinates[1];
             var end = Coordinates[2];

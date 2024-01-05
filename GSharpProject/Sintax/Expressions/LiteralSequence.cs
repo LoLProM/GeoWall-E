@@ -1,4 +1,5 @@
 namespace GSharpProject;
+//Tipo de secuencia literal
 public class LiteralSequence : Sequence
 {
     private readonly List<object> sequenceElements = new();

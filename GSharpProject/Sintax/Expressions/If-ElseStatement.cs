@@ -24,6 +24,7 @@ public class If_ElseStatement : GSharpExpression
         ThenStatement.CheckType(typedScope);
         ElseClause.CheckType(typedScope);
 
+        //checkeamos la condicion el then y el else y verificamos q el then y el else sean del mismo tipo de retorno
         if (ThenStatement.ExpressionType != ElseClause.ExpressionType)
         {
             throw new Exception("ThenStatement and ElseClause must be the same return type");

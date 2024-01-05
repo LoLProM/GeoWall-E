@@ -2,6 +2,7 @@ using System.Collections;
 
 namespace GSharpProject;
 
+//tipo secuencia todas las demas heredan de aqui saben sumarse tienen un count de elementos y tienen sus respectivos elementos ademas de q podemos iterar sobre una secuencia sin importar su tipo
 public class Sequence : IEnumerable<object>
 {
     public virtual IEnumerable<object> Elements {get;}

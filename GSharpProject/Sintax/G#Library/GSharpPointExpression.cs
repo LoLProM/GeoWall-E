@@ -33,6 +33,7 @@ public class GSharpPointExpression : GSharpPrimitive
             var secondValue = Coordinates[1];
             firstValue.CheckType(typedScope);
             secondValue.CheckType(typedScope);
+            //Checkeamos cada una de sus coordenadas y verificamos q tengan el tipo correcto
 
             if ((firstValue.ExpressionType == SingleType.Of<int>() && secondValue.ExpressionType == SingleType.Of<int>()) || (firstValue.ExpressionType == SingleType.Of<double>() && secondValue.ExpressionType == SingleType.Of<double>()) || (firstValue.ExpressionType == SingleType.Of<int>() && secondValue.ExpressionType != SingleType.Of<double>()) || (firstValue.ExpressionType == SingleType.Of<double>() && secondValue.ExpressionType == SingleType.Of<int>()))
             {

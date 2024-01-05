@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using GSharpProject.Parsing;
 namespace GSharpProject;
-
 public class AssignmentExpression : GSharpExpression
 {
     public AssignmentExpression(List<string> identifiers, GSharpExpression expression)
@@ -17,6 +16,7 @@ public class AssignmentExpression : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
+        //Checkeamos la expression de la derecha si su tipo es un compound type entonces es una secuencia a la cual seteamos a cada variable su tipo en el scope de tipos
         Expression.CheckType(typedScope);
 
         if (Expression.ExpressionType is CompoundType compoundType)
@@ -24,6 +24,7 @@ public class AssignmentExpression : GSharpExpression
             SetScopeType(typedScope, compoundType);
         }
         else
+        //si no es una secuencia entonces asignamos directamente su valor
         {
             if (Identifiers.Count > 1 && Expression.ExpressionType != SingleType.Of<Undefined>())
             {

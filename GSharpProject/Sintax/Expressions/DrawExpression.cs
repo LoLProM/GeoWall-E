@@ -25,6 +25,7 @@ public class DrawExpression : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
+        //Checkeamos si el tipo del argumento es pintable sino excepcion
         Argument.CheckType(typedScope);
 
         if (Argument.ExpressionType is CompoundType compoundType && !compoundType.ContentType.Type.GetInterfaces().Contains(typeof(IFigure)) || Argument.ExpressionType is SingleType singleType && !singleType.Type.GetInterfaces().Contains(typeof(IFigure)))

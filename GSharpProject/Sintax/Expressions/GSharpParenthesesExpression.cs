@@ -18,6 +18,7 @@ public class GSharpParenthesesExpression : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
+        //checkeamos lo q esta dentro de los parentesis
         InsideExpression.CheckType(typedScope);
         ExpressionType = InsideExpression.ExpressionType;
     }

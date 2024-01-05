@@ -33,6 +33,7 @@ public class GSharpRayExpression : GSharpPrimitive
 
             start.CheckType(typedScope);
             end.CheckType(typedScope);
+            //Checkeamos cada una de sus coordenadas y verificamos q tengan el tipo correcto
 
             if (start.ExpressionType != SingleType.Of<Point>() || end.ExpressionType != SingleType.Of<Point>())
             {

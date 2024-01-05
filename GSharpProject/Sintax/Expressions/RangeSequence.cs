@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace GSharpProject;
-
+//Tipo de secuencia de rango
 public class RangeSequence : Sequence
 {
     public RangeSequence(int start, int end)

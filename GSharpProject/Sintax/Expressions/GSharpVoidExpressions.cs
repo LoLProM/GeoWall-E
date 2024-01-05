@@ -7,6 +7,5 @@ public class GSharpVoidEx : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
-        throw new NotImplementedException();
     }
 }

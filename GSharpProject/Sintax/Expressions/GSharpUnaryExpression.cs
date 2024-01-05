@@ -16,7 +16,7 @@ public class GSharpUnaryExpression : GSharpExpression
     public GSharpExpression InternalExpression { get; }
 
     public override void CheckType(TypedScope typedScope)
-    {
+    {//checkeamos la expression interna
         InternalExpression.CheckType(typedScope);
         ExpressionType = InternalExpression.ExpressionType;
     }

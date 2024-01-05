@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace GSharpProject.Parsing;
 public class Lexer
+//Esta clase representa el primer paso del programa aqui se tokeniza la entrada y se devuelve una lista de tokens
 {
     public List<Token> Tokens = new List<Token>();
     int position = 0;
@@ -12,8 +13,6 @@ public class Lexer
         textInput = Regex.Replace(textInput, @"\s+", " ");
 
         Regex SyntaxTokens = new(@"\d+\.?\d+(E(\+|-)\d+)?|\d+|\+|\-|\*|\^|%|\(|\)|{|}|(=>)|(>=)|(<=)|<[=]{0}|>[=]{0}|!=|;|,|={1,2}|\.\.\.|!|\&|\||(\u0022([^\u0022\\]|\\.)*\u0022)|@|[a-zA-Z]+\w*|/|[^\(\)\+\-\*/\^%<>=!&\|,;\s]+");
-
-        // Regex SyntaxTokens = new (@"\d+$|\d+\.\d+$|\+|\-|\*|\^|%|\(|\)|{|}|(=>)|(>=)|(<=)|<[=]{0}|>[=]{0}|!=|;|,|={1,2}|\.\.\.|_");
 
         var matches = SyntaxTokens.Matches(textInput);
 
@@ -108,10 +107,16 @@ public class Lexer
         {
             return new Token(match.Value, TokenType.SequenceToken, match.Index, match.Value);
         }
+        else if (IsColor(match))
+        {
+            return new Token(match.Value, TokenType.Color, match.Index, match.Value);
+        }
+
         else if (IsIdentifier(match))
         {
             return new Token(match.Value, TokenType.Identifier, match.Index, match.Value);
         }
+
 
         switch (match.Value)
         {
@@ -163,6 +168,18 @@ public class Lexer
                 return new Token("_", TokenType.Underscore, match.Index, null);
         }
         throw new Exception($"! LEXICAL ERROR : '{match.Value}' is not a valid token");
+    }
+
+
+    private bool IsColor(Match match)
+    {
+        if (match.Value == "color")
+        {
+            position++;
+            return true;
+        }
+        return false;
+
     }
 
     private bool IsMeasure(Match match)

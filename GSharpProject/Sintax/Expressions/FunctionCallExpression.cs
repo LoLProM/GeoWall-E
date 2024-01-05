@@ -3,6 +3,7 @@ using GSharpProject.Parsing;
 
 namespace GSharpProject;
 
+//Esta clase es la representacion de la llamada de una funcion su nombre y la lista de parametros
 public class FunctionCallExpression : GSharpExpression
 {
     public FunctionCallExpression(string functionName, List<GSharpExpression> parameters)
@@ -20,6 +21,7 @@ public class FunctionCallExpression : GSharpExpression
         {
             throw new Exception($"Function {FunctionName} is not declared");
         }
+        //Checkeamos si la funcion existe si es asi entonces a cada parametro verificamos si tiene la misma cantidad q su declaracion y entonces a cada parametro le chekeamos el tipo
 
         TypedScope functionDeclarationScope = new();
 

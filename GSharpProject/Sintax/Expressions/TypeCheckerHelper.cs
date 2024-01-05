@@ -2,6 +2,7 @@ using GSharpProject;
 
 public static class TypeCheckerHelper
 {
+    //clase statica encargad de verificar todas las posibles combinaciones de tipos entre objetos y lo q devuelven segun su operador
     private readonly static Dictionary<(ExpressionType, TokenType, ExpressionType), ExpressionType> binaryTypesDic = new()
     {
         [(SingleType.Of<int>(), TokenType.PlusToken, SingleType.Of<int>())] = SingleType.Of<int>(),//

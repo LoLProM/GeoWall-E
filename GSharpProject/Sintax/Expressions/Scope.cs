@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace GSharpProject.Parsing;
 
 public abstract class Scope<T>
-{
+{//Clase encargada de tener el ambito del programa
+//Tenemos el diccionario de variables 
     protected Scope<T>? parent;
     private readonly Dictionary<string, T> variables;
     public Scope()
@@ -44,10 +45,10 @@ public abstract class Scope<T>
     }
 }
 
-public class TypedScope : Scope<ExpressionType>
+public class TypedScope : Scope<ExpressionType>//scope de tipos 
 {
 }
 
-public class EvalScope : Scope<object> 
+public class EvalScope : Scope<object> //scope de valores
 { 
 }

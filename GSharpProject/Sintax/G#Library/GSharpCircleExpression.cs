@@ -32,6 +32,7 @@ public class GSharpCircleExpression : GSharpPrimitive
             var radius = Coordinates[1];
             center.CheckType(typedScope);
             radius.CheckType(typedScope);
+            //Checkeamos cada una de sus coordenadas y verificamos q tengan el tipo correcto
 
             if (center.ExpressionType != SingleType.Of<Point>() || radius.ExpressionType != SingleType.Of<Measure>())
             {

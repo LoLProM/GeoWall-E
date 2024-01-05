@@ -3,7 +3,8 @@ using GSharpProject.Parsing;
 namespace GSharpProject;
 
 public class Let_In_Expression : GSharpExpression
-{
+{//Esta clase representa que es un let in expression
+//Esta constituida por un let expression y una expression
     public Let_In_Expression(List<GSharpExpression> letExpressions, GSharpExpression inExpression)
     {
         LetExpressions = letExpressions;
@@ -16,6 +17,7 @@ public class Let_In_Expression : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
+        //checkeamos el tipo de cada expression dentro del let y luego el in
         var letScope = new TypedScope();
         typedScope.AddChildScope(letScope);
         foreach(var expression in LetExpressions)

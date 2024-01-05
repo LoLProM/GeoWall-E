@@ -13,6 +13,8 @@ public class MeasureExpression : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
+
+        //Checkeamos q los dos puntos sean en efecto puntos
         PointA.CheckType(typedScope);
         PointB.CheckType(typedScope);
 

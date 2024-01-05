@@ -23,6 +23,7 @@ public class GSharpLiteralSequence : GSharpSequence
 
     public override void CheckType(TypedScope typedScope)
     {
+        //checkeamos q todas las expressiones dentro de una literal sequence sean del mismo tipo
         if(HasSameTypeInAllElement(typedScope))
         {
             ExpressionType = new CompoundType(typeof(LiteralSequence),Elements[0].ExpressionType!);
@@ -57,6 +58,7 @@ public class GSharpRangeSequence : GSharpSequence
 
     public override void CheckType(TypedScope typedScope)
     {
+        //checkeamos q el primero y el ultimo sean de tipo entero y su compound es de tipo sequencia y sus valores internos son de tipo int
         First.CheckType(typedScope);
         Last.CheckType(typedScope);
         if (First.ExpressionType == Last.ExpressionType && First.ExpressionType == SingleType.Of<int>())
@@ -81,6 +83,7 @@ public class GSharpInfiniteSequence : GSharpSequence
 
     public override void CheckType(TypedScope typedScope)
     {
+        //checkeamos q el primero sea de tipo entero y su compound es de tipo sequencia y sus valores internos son de tipo int
         First.CheckType(typedScope);
         if (First.ExpressionType == SingleType.Of<int>())
         {

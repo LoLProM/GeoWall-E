@@ -1,6 +1,7 @@
 namespace GSharpProject.Parsing;
 
 public class RecursionChecker
+//Revisamos si una funcion es recursiva revisando recursivamente cada expression de adentro
 {
     public HashSet<string> CalledFunction = new();
     public bool CheckRecursiveFunctions(FunctionDeclarationExpression functionDeclarationExpression)
@@ -53,35 +54,35 @@ public class RecursionChecker
         if (expression is GSharpPointExpression gSharpPointExpression)
         {
             if (gSharpPointExpression.Coordinates is not null)
-            return gSharpPointExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpPointExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpCircleExpression gSharpCircleExpression)
         {
             if (gSharpCircleExpression.Coordinates is not null)
-            return gSharpCircleExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpCircleExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
 
         if (expression is GSharpLineExpression gSharpLineExpression)
         {
             if (gSharpLineExpression.Coordinates is not null)
 
-            return gSharpLineExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpLineExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpArcExpression gSharpArcExpression)
         {
             if (gSharpArcExpression.Coordinates is not null)
-            return gSharpArcExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpArcExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpSegmentExpression gSharpSegmentExpression)
         {
             if (gSharpSegmentExpression.Coordinates is not null)
-            return gSharpSegmentExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpSegmentExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
         if (expression is GSharpRayExpression gSharpRayExpression)
         {
             if (gSharpRayExpression.Coordinates is not null)
 
-            return gSharpRayExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
+                return gSharpRayExpression.Coordinates.Any(statement => CheckRecursiveFunctions(statement));
         }
 
         if (expression is MeasureExpression measureExpression)
@@ -91,13 +92,15 @@ public class RecursionChecker
 
         if (expression is FunctionCallExpression functionCallExpression)
         {
-            if (StandardLibrary.Functions.ContainsKey(functionCallExpression.FunctionName))
+            if (CalledFunction.Contains(functionCallExpression.FunctionName))
             {
                 return true;
             }
             CalledFunction.Add(functionCallExpression.FunctionName);
             var functionBody = StandardLibrary.Functions[functionCallExpression.FunctionName];
-            return CheckRecursiveFunctions(functionBody);
+            var checkeds = CheckRecursiveFunctions(functionBody);
+            CalledFunction.Remove(functionCallExpression.FunctionName);
+            return checkeds;
         }
         return false;
     }

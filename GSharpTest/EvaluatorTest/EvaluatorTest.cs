@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using GSharpProject;
 using GSharpProject.Evaluator;
 using GSharpProject.Parsing;
@@ -148,7 +149,7 @@ public class EvaluatorTest
     //         (if ((a*a)+(b*b)<4) then 1 else 0) 
     //     else 
     //         IsMandelBrot(((a*a)-(b*b)+R),(2*a*b+I),R,I,(m-1));
-    
+
     // MandelBrot11(x,y,R,I) = 
     //     if (IsMandelBrot(x,y,R,I,30)) then 
     //         let draw point(x*100+350,y*100+350);
@@ -156,7 +157,7 @@ public class EvaluatorTest
     //         in 1 
     //     else 
     //         0; 
-    
+
     // k11 = MandelBrot11(0,0,0,0);")]
 
     // public void EvalMandelBrot3(string input)
@@ -283,6 +284,345 @@ a = sierpinskyTriangle(point(450,300),m);")]
     public void EvalSerpinskiOk(string input)
     {
         StandardLibrary.Initialize();
+        WallEColors.InitializeColor();
+        var statements = StatementsTree.Create(input);
+        TypeChecker.CheckType(statements);
+        GSharpEvaluator evaluator = new(statements);
+        evaluator.Evaluate();
+    }
+
+    [Theory]
+    // [InlineData("color blue;")]
+    // [InlineData("color blue; draw point p; restore(); draw point c;")]
+    //    [InlineData("a = point(2,2); point p1;c = circle(a,measure(a,p1)+measure(point(0,0),point(0,0.01)));")]
+    // [InlineData("color blue; draw point p;")]
+    // [InlineData("draw point sequence s;")]
+    // [InlineData("draw circle sequence s;")]
+    // [InlineData("draw ray sequence s;")]
+    // [InlineData("draw samples();")]
+    // [InlineData("line p; draw p; draw points(p);")]
+    // [InlineData("line p; draw points(p);")]
+    // [InlineData("color blue ;ray p; draw p; color red; draw points(p);")]
+    // [InlineData("b(x) = x + x;f(x) = b(x); a,b,c,d,e,f,_ = f({1,2,3});")]
+    [InlineData(@"mediatrix(p1, p2) = 
+    let
+        l1 = line(p1, p2);
+        m = measure (p1, p2);
+        c1 = circle (p1, m);
+        c2 = circle (p2, m);
+        i1,i2,_ = intersect(c1, c2);
+    in line(i1,i2);
+
+drawTriangle(p1,p2,p3) = 
+let
+   draw {segment(p1,p2),segment(p2,p3),segment(p3,p1)};
+in 1;
+
+getTriangleCenter(p1,p2,p3) = 
+let
+   a = mediatrix(p1,p2);
+   b = mediatrix(p2,p3);
+   i1,_ = intersect(a,b);
+in i1;
+
+regularTriangle(p,m) =
+    let
+        point p2;
+        l1 = line(p,p2);
+        c1 = circle(p,m);
+        i1,i2,_ = intersect(l1,c1);
+        c2 = circle(i1,m);
+        c3 = circle(i2,m);
+        i3,i4,_ = intersect(c2,c1);
+        i5,i6,_ = intersect(c3,c1);
+    in {i1,i5,i6};  
+
+getReverseTriangle(p1,p2,p3) =
+let
+   center = getTriangleCenter(p1,p2,p3);
+   c = circle(center,measure(center,p1)+measure(point(0,0),point(0,0.01)));
+   i2,_ = intersect(ray(p1,center),c);
+   i3,_ = intersect(ray(p2,center),c);
+   i1,_ = intersect(ray(p3,center),c);
+in {i1,i2,i3}; 
+
+a,b,c,_ = getReverseTriangle(i1 = point(0,1), i2 = point(1,0), i3 = point(-1,0));")]
+
+    public void EvalOk(string input)
+    {
+        StandardLibrary.Initialize();
+        WallEColors.InitializeColor();
+        var statements = StatementsTree.Create(input);
+        TypeChecker.CheckType(statements);
+        GSharpEvaluator evaluator = new(statements);
+        evaluator.Evaluate();
+    }
+
+    [Theory]
+    [InlineData(@"
+    mediatrix(p1, p2) = 
+    let
+        l1 = line(p1, p2);
+        m = measure (p1, p2);
+        c1 = circle (p1, m);
+        c2 = circle (p2, m);
+        i1,i2,_ = intersect(c1, c2);
+    in line(i1,i2);
+
+drawTriangle(p1,p2,p3) = 
+let
+   draw {segment(p1,p2),segment(p2,p3),segment(p3,p1)};
+in 1;
+
+getTriangleCenter(p1,p2,p3) = 
+let
+   a = mediatrix(p1,p2);
+   b = mediatrix(p2,p3);
+   i1,_ = intersect(a,b);
+in i1;
+
+regularTriangle(p,m) =
+    let
+        point p2;
+        l1 = line(p,p2);
+        c1 = circle(p,m);
+        i1,i2,_ = intersect(l1,c1);
+        c2 = circle(i1,m);
+        c3 = circle(i2,m);
+        i3,i4,_ = intersect(c2,c1);
+        i5,i6,_ = intersect(c3,c1);
+    in {i1,i5,i6};  
+
+getReverseTriangle(p1,p2,p3) =
+let
+   center = getTriangleCenter(p1,p2,p3);
+   c = circle(center,measure(center,p1)+measure(point(0,0),point(0,0.01)));
+   i2,_ = intersect(ray(p1,center),c);
+   i3,_ = intersect(ray(p2,center),c);
+   i1,_ = intersect(ray(p3,center),c);
+in {i1,i2,i3};
+
+findSubTriangle(pPivo,p2,p3,pl1,pl2) =
+let 
+   i1,_ = intersect(line(pPivo,p2),line(pl1,pl2));
+   i2,_ = intersect(line(pPivo,p3),line(pl1,pl2));
+in {pPivo,i1,i2};
+
+KorshSnowFly(p1,p2,p3,cant) =
+if cant > 0 then
+   let
+    x = drawTriangle(p1,p2,p3);
+   
+     t1,t2,t3,_ = getReverseTriangle(p1,p2,p3);
+   
+    t11,t12,t13,_ = findSubTriangle(p1,p2,p3,t1,t3);
+    t21,t22,t23,_ = findSubTriangle(t1,t2,t3,p1,p2);
+    t31,t32,t33,_ = findSubTriangle(p2,p1,p3,t1,t2);
+    t41,t42,t43,_ = findSubTriangle(t2,t3,t1,p2,p3);
+    t51,t52,t53,_ = findSubTriangle(p3,p1,p2,t2,t3);
+    t61,t62,t63,_ = findSubTriangle(t3,t1,t2,p3,p1);
+    color red;
+    x1 = KorshSnowFly(t11,t12,t13,cant-1);
+    color blue;
+    x2 = KorshSnowFly(t21,t22,t23,cant-1);
+    color yellow;
+    x3 = KorshSnowFly(t31,t32,t33,cant-1);
+    color green;
+    x4 = KorshSnowFly(t41,t42,t43,cant-1);
+    color magenta;
+    x5 = KorshSnowFly(t51,t52,t53,cant-1);
+    color cyan;
+    x6 = KorshSnowFly(t61,t62,t63,cant-1);
+   in 1
+else 1;
+
+i1,i2,i3,_ = regularTriangle(point(250,250),measure(point(0,0),point(0,150)));
+k = KorshSnowFly(i1,i2,i3,4);")]
+
+    public void EvalKorshOk(string input)
+    {
+        StandardLibrary.Initialize();
+        WallEColors.InitializeColor();
+        var statements = StatementsTree.Create(input);
+        TypeChecker.CheckType(statements);
+        GSharpEvaluator evaluator = new(statements);
+        evaluator.Evaluate();
+    }
+
+
+    [Theory]
+    [InlineData(@"regularHexagon(p,m) =
+    let
+        point p2;
+        l1 = line(p,p2);
+        c1 = circle(p,m);
+        i1,i2,_ = intersect(l1,c1);
+        c2 = circle(i1,m);
+        c3 = circle(i2,m);
+        i3,i4,_ = intersect(c2,c1);
+        i5,i6,_ = intersect(c3,c1);
+    in {i1,i3,i5,i2,i6,i4};
+
+
+mediatrix(p1, p2) = 
+    let
+        l1 = line(p1, p2);
+        m = measure (p1, p2);
+        c1 = circle (p1, m);
+        c2 = circle (p2, m);
+        i1,i2,_ = intersect(c1, c2);
+    in line(i1,i2);
+
+hexagonalStar(p,m) =
+   let 
+       v1,v2,v3,v4,v5,v6,_ = regularHexagon(p,m);
+       l1 = mediatrix(v1,v2);
+       l2 = mediatrix(v2,v3);
+       l3 = mediatrix(v3,v4);
+       i1,_ = intersect(l1,line(v3,v4));
+       i2,_ = intersect(l1,line(v3,v2));
+       i3,_ = intersect(l2,line(v1,v2));
+       i4,_ = intersect(l2,line(v1,v6));
+       i5,_ = intersect(l3,line(v2,v3));
+       i6,_ = intersect(l3,line(v2,v1));
+   in {v1,i2,v2,i3,v3,i5,v4,i1,v5,i4,v6,i6};
+
+getSpikes(p1,p2,p3,m) =
+      if m / measure(p2,p3) > 80 then {} 
+      else let
+              l1 = mediatrix(p1,p2);
+              l2 = mediatrix(p1,p3);
+              i1,_ = intersect(l1,line(p1,p2));
+              i2,_ = intersect(l2,line(p1,p3));
+              i3,_ = intersect(l1,l2);
+              draw {segment(i1,i3), segment(i2,i3),segment(i3,p1)};
+              in {i1,i2,i3} + getSpikes(i1,p2,i3,m) + getSpikes(i2,p3,i3,m);
+        
+
+
+drawRecursiveSnowFly(p,m) = 
+   let
+      p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,_ = hexagonalStar(p,m);
+      b = point(416.7268740928237,446.26311596696246); 
+      c = point(449.99999999999943,300.0000000000001); 
+      d = point(361.7113685375882,395.2896508257555 );
+      m1 = measure(p1,p2);
+      m = 149.9999999999995;
+      s1 = getSpikes(b,c,d,m);
+      s2 = getSpikes(p3,p2,p4,m);
+      s3 = getSpikes(p5,p4,p6,m);
+      s4 = getSpikes(p7,p6,p8,m);
+      s5 = getSpikes(p9,p8,p10,m);
+      s6 = getSpikes(p11,p10,p12,m);
+      draw 
+      {
+        segment(p1,p2),segment(p2,p3),segment(p3,p4),segment(p4,p5),
+        segment(p5,p6),segment(p6,p7),segment(p7,p8),segment(p8,p9),
+        segment(p9,p10),segment(p10,p11),segment(p11,p12),segment(p12,p1),
+        segment(p1,p),segment(p2,p),segment(p3,p),segment(p4,p),segment(p5,p),
+        segment(p6,p),segment(p7,p),segment(p8,p),segment(p9,p),segment(p10,p),
+        segment(p11,p),segment(p12,p)
+      };
+   in 0;
+   
+   
+   
+   
+pu1 = point(150,0);
+pu2 = point(0,0);
+m = measure(pu1,pu2);
+
+
+a = drawRecursiveSnowFly(point(450,300),m);")]
+
+    public void EvalshOk(string input)
+    {
+        StandardLibrary.Initialize();
+        WallEColors.InitializeColor();
+        var statements = StatementsTree.Create(input);
+        TypeChecker.CheckType(statements);
+        GSharpEvaluator evaluator = new(statements);
+        evaluator.Evaluate();
+    }
+
+
+
+    [Theory]
+    // [InlineData("a = circle(point(2,2), measure(point(2,2),point(2,3)) + measure(point(2,2),point(2,3))) ;")]
+
+//     [InlineData(@"
+//     getSpikes(p1,p2,p3,m) =
+//       if m / measure(p2,p3) > 80 then {} 
+//       else let
+//               l1 = mediatrix(p1,p2);
+//               l2 = mediatrix(p1,p3);
+//               i1,_ = intersect(l1,line(p1,p2));
+//               i2,_ = intersect(l2,line(p1,p3));
+//               i3,_ = intersect(l1,l2);
+//               draw {segment(i1,i3), segment(i2,i3),segment(i3,p1)};
+//               in {i1,i2,i3} + getSpikes(i1,p2,i3,m) + getSpikes(i2,p3,i3,m);
+
+//     mediatrix(p1, p2) = 
+//     let
+//         l1 = line(p1, p2);
+//         m = measure (p1, p2);
+//         c1 = circle (p1, m);
+//         c2 = circle (p2, m);
+//         i1,i2,_ = intersect(c1, c2);
+//     in line(i1,i2);
+        
+// b = point(416.7268740928237,446.26311596696246); c = point(449.99999999999943,300.0000000000001); d = point(361.7113685375882,395.2896508257555 ); a = getSpikes(b,c,d,measure(b,c));")]
+
+[InlineData(@"
+a(n,m) = 
+let 
+    n1 = n;
+    m1 = m;
+    x = if n>0 then a(n-1,m+3) else 1;
+in 1;
+
+callA =a(2,3);
+
+circle b;
+line c;
+point t;
+segment e;
+point f;
+line yj;
+
+draw b;
+draw c;
+draw t;
+draw e;
+draw f;
+draw yj;
+
+
+f(u)=
+let
+    circle b;
+    line c;
+    point t;
+    segment e;
+    point f;
+    line yg;
+    line yj;
+
+    draw b;
+    draw c;
+    draw t;
+    draw e;
+    draw f;
+    draw yg;
+    draw yj;
+in if u>0 then f(u-1)else 0;
+
+trtrt= f(3);
+")]
+    public void EvalsRadiusOk(string input)
+    {
+        StandardLibrary.Initialize();
+        WallEColors.InitializeColor();
         var statements = StatementsTree.Create(input);
         TypeChecker.CheckType(statements);
         GSharpEvaluator evaluator = new(statements);

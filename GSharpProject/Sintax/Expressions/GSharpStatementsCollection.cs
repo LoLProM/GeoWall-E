@@ -11,10 +11,11 @@ public class GSharpStatementsCollection : GSharpExpression
 
     public override void CheckType(TypedScope typedScope)
     {
-        foreach(var expression in Statements)
+        //checkeamso cada expression
+        foreach (var expression in Statements)
         {
-            if (expression is not FunctionDeclarationExpression)
-            expression.CheckType(typedScope);
+            if (expression is not FunctionDeclarationExpression && expression is not GSharpVoidEx)
+                expression.CheckType(typedScope);
         }
     }
 }
